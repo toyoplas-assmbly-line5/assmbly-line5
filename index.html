@@ -183,7 +183,7 @@
                 <!-- Chart 1: Perbandingan Target vs Output -->
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fas fa-chart-bar text-blue-500"></i> Perbandingan Target vs Barang OK Per Mesin
+                        <i class="fas fa-chart-bar text-blue-500"></i> Perbandingan Target vs Barang OK Per MC
                     </h3>
                     <div class="h-64">
                         <canvas id="machineChart"></canvas>
@@ -201,11 +201,11 @@
                 </div>
             </div>
 
-            <!-- TABEL UTAMA PRODUKSI 18 MESIN PRESS -->
+            <!-- TABEL UTAMA PRODUKSI 18 MESIN MC -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
                     <h3 class="font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                        <i class="fas fa-list-alt text-brandBlue dark:text-blue-400"></i> Input Data 18 Mesin Press (Penyatuan Operator & Jam Kerja)
+                        <i class="fas fa-list-alt text-brandBlue dark:text-blue-400"></i> Input Data 18 Mesin (MC-01 s.d. MC-18)
                     </h3>
                     <span class="text-xs text-gray-500 dark:text-gray-400">*Barang NG = Raw Input - Barang OK</span>
                 </div>
@@ -257,7 +257,7 @@
         let machineChart = null;
         let hourlyChart = null;
 
-        let dbData = JSON.parse(localStorage.getItem('toyoplas_db_v1')) || createInitialData();
+        let dbData = JSON.parse(localStorage.getItem('toyoplas_db_v2')) || createInitialData();
 
         function createInitialData() {
             const date = new Date().toISOString().split('T')[0];
@@ -272,7 +272,7 @@
                 });
 
                 data[date].push({
-                    machine: `Mesin Press ${machineNum}`,
+                    machine: `MC-${machineNum}`,
                     operator: `Operator ${machineNum}`,
                     target: 100,
                     hourly: hourly
@@ -339,7 +339,7 @@
                     const hourly = {};
                     SHIFTS.forEach(shift => hourly[shift] = { raw: 0, finish: 0 });
                     dbData[date].push({
-                        machine: `Mesin Press ${machineNum}`,
+                        machine: `MC-${machineNum}`,
                         operator: `Operator ${machineNum}`,
                         target: 100,
                         hourly: hourly
@@ -351,7 +351,7 @@
         }
 
         function saveDB() {
-            localStorage.setItem('toyoplas_db_v1', JSON.stringify(dbData));
+            localStorage.setItem('toyoplas_db_v2', JSON.stringify(dbData));
         }
 
         function renderAll() {
@@ -482,7 +482,7 @@
                 totalOutput += mOutput;
                 totalRaw += mRaw;
 
-                labels.push(item.machine.replace('Mesin Press ', 'Press '));
+                labels.push(item.machine);
                 targets.push(item.target);
                 outputs.push(mOutput);
             });
