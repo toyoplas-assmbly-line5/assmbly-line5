@@ -336,7 +336,7 @@
             const syncSpinner = document.getElementById('syncSpinner');
             if (syncSpinner) syncSpinner.style.display = 'inline-block';
 
-            // Menggunakan Jalur Baku Sesuai Aturan Firestore
+            // Menggunakan Jalur Firestore
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'daily_production', selectedDate);
 
             window.unsubscribeListener = onSnapshot(docRef, (docSnap) => {
@@ -463,10 +463,11 @@
             });
         };
 
-        // Input Modifikasi
+        // Input Modifikasi & Update Langsung Realtime
         window.updateOperator = function(index, val) {
             if (window.currentData[index]) {
                 window.currentData[index].operator = val;
+                window.renderKPIAndCharts();
                 window.saveDataToCloud();
             }
         };
@@ -474,6 +475,7 @@
         window.updateTarget = function(index, val) {
             if (window.currentData[index]) {
                 window.currentData[index].target = Number(val) || 0;
+                window.renderKPIAndCharts();
                 window.saveDataToCloud();
             }
         };
@@ -484,6 +486,7 @@
                     window.currentData[index].hourly[shift] = { raw: 0, finish: 0 };
                 }
                 window.currentData[index].hourly[shift][field] = Number(val) || 0;
+                window.renderAll();
                 window.saveDataToCloud();
             }
         };
