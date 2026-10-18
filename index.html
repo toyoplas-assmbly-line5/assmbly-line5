@@ -12,6 +12,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- SheetJS CDN (Export Excel) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <!-- Firebase SDK (Real-time Cloud Database) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -49,19 +54,19 @@
             </div>
             
             <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-1">Assembly Line 5</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Sistem Monitoring Produksi Real-Time Cloud</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Sistem Monitoring Produksi Harian</p>
 
             <div class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">PILIH HAK AKSES / PERAN</label>
                     <select id="loginRole" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
-                        <option value="operator">Operator </option>
-                        <option value="admin_leader">Admin / Leader </option>
+                        <option value="operator">Operator (Mode Input Data)</option>
+                        <option value="admin_leader">Admin / Leader (Mode Edit & Akses Penuh)</option>
                     </select>
                 </div>
 
                 <div id="passwordContainer" class="hidden">
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">KATA SANDI</label>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">KATA SANDI (PASSWORD)</label>
                     <input type="password" id="loginPassword" placeholder="Masukkan kata sandi..." class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                 </div>
 
@@ -98,32 +103,26 @@
                             <span>•</span>
                             <span id="roleBadge" class="bg-blue-800 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider text-yellow-300"></span>
                             <span>•</span>
-                            <span id="dbSyncStatus" class="bg-emerald-700/80 text-emerald-200 px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Cloud Realtime Connected
-                            </span>
+                            <span id="syncStatus" class="text-emerald-300 text-[10px]"><i class="fas fa-circle-notch fa-spin"></i> Menghubungkan Cloud...</span>
                         </p>
                     </div>
                 </div>
 
                 <!-- Right: Actions & Controls -->
                 <div class="flex items-center gap-2 sm:gap-3">
-                    <!-- Share Laporan -->
-                    <button onclick="shareGeneral()" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Bagikan Ringkasan Laporan">
+                    <button onclick="shareGeneral()" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Bagikan Ringkasan Laporan ke WA / Lainnya">
                         <i class="fas fa-share-alt"></i> <span class="hidden sm:inline">Bagikan Laporan</span>
                     </button>
 
-                    <!-- Export Excel -->
                     <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Download Spreadsheet Excel">
                         <i class="fas fa-file-excel"></i> <span class="hidden sm:inline">Export Excel</span>
                     </button>
 
-                    <!-- Theme Toggle -->
                     <button onclick="toggleDarkMode()" class="bg-blue-800 hover:bg-blue-700 text-yellow-300 p-2 rounded-lg text-sm transition shadow" title="Ganti Mode Terang/Gelap">
                         <i class="fas fa-moon dark:hidden"></i>
                         <i class="fas fa-sun hidden dark:inline"></i>
                     </button>
 
-                    <!-- Logout -->
                     <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow">
                         <i class="fas fa-power-off"></i> <span class="hidden sm:inline">Keluar</span>
                     </button>
@@ -134,18 +133,23 @@
         <!-- MAIN CONTAINER -->
         <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
             
-            <!-- TOOLBAR & DATE SELECTOR -->
+            <!-- TOOLBAR & BACKUP SYSTEM -->
             <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400">Pilih Tanggal Produksi:</label>
-                        <input type="date" id="selectedDate" onchange="setupRealtimeListener()" class="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm font-semibold">
+                        <input type="date" id="selectedDate" onchange="renderAll()" class="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm font-semibold">
                     </div>
                 </div>
 
-                <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                    <i class="fas fa-sync text-blue-500 animate-spin" id="syncSpinner" style="display: none;"></i>
-                    <span id="syncText">Data tersinkronisasi otomatis secara online</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportBackupJSON()" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition" title="Simpan data ke file komputer">
+                        <i class="fas fa-download"></i> Backup Data (.json)
+                    </button>
+                    <label class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer flex items-center gap-1 transition" title="Buka data dari file komputer">
+                        <i class="fas fa-upload"></i> Restore Data
+                        <input type="file" id="restoreFile" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+                    </label>
                 </div>
             </div>
 
@@ -178,17 +182,15 @@
 
             <!-- CHARTS VISUALISASI -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Chart 1: Perbandingan Target vs Output -->
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fas fa-chart-bar text-blue-500"></i> Perbandingan Target vs Barang OK Per Mesin
+                        <i class="fas fa-chart-bar text-blue-500"></i> Perbandingan Target vs Barang OK Per MC
                     </h3>
                     <div class="h-64">
                         <canvas id="machineChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Chart 2: Tren Produksi Per Jam -->
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                         <i class="fas fa-chart-line text-emerald-500"></i> Tren Produksi Per Jam Kerja (08:00 - 16:00)
@@ -199,7 +201,7 @@
                 </div>
             </div>
 
-            <!-- TABEL UTAMA PRODUKSI 18 MESIN (MC-01 s.d. MC-18) -->
+            <!-- TABEL UTAMA PRODUKSI 18 MESIN MC -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
                     <h3 class="font-bold text-gray-800 dark:text-white flex items-center gap-2">
@@ -232,46 +234,33 @@
 
         <!-- FOOTER -->
         <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 text-center text-xs text-gray-500 dark:text-gray-400 mt-auto">
-            © 2026 PT Toyoplas Manufacturing Indonesia - Assembly Line 5 (Cloud Sync Active).
+            © 2026 PT Toyoplas Manufacturing Indonesia - Assembly Line 5.
         </footer>
     </div>
 
-    <!-- NOTIFICATION MODAL -->
-    <div id="customModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm w-full text-center shadow-xl border border-gray-200 dark:border-gray-700">
-            <div id="modalIcon" class="text-3xl mb-3 text-blue-500">
-                <i class="fas fa-info-circle"></i>
-            </div>
-            <p id="modalMessage" class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-5"></p>
-            <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg text-xs transition">OK</button>
-        </div>
-    </div>
-
     <!-- ========================================== -->
-    <!-- FIREBASE MODULE & LOGIKA APLIKASI         -->
+    <!-- LOGIKA SKRIP APLIKASI & REALTIME DATABASE  -->
     <!-- ========================================== -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Konfigurasi Firebase bawaan environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'toyoplas-line5-default';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "demo-key",
-            authDomain: "demo.firebaseapp.com",
-            projectId: "demo-project",
-            storageBucket: "demo.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:demo"
+    <script>
+        // Konfigurasi Firebase Asli Milik Anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyBayWf1wiJtDPfT7J3w0A3yCAJYAzLg-dA",
+            authDomain: "toyoplas-line5.firebaseapp.com",
+            databaseURL: "https://toyoplas-line5-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "toyoplas-line5",
+            storageBucket: "toyoplas-line5.firebasestorage.app",
+            messagingSenderId: "326978986159",
+            appId: "1:326978986159:web:c34423b422cd211b30b45a",
+            measurementId: "G-LJPLQLMW7C"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        // Inisialisasi Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
 
-        // State Global
-        window.SHIFTS = [
+        const SHIFTS = [
             '08:00 - 09:00',
             '09:00 - 10:00',
             '10:00 - 11:00',
@@ -282,114 +271,139 @@
             '15:00 - 16:00'
         ];
 
-        window.currentRole = null;
-        window.currentData = [];
-        window.unsubscribeListener = null;
-        window.machineChart = null;
-        window.hourlyChart = null;
+        let currentRole = null; 
+        let machineChart = null;
+        let hourlyChart = null;
+        let globalDatabaseCache = {};
 
-        // Inisialisasi Auth terlebih dahulu
-        async function initAuth() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+        window.onload = function() {
+            document.getElementById('selectedDate').value = new Date().toISOString().split('T')[0];
+            
+            document.getElementById('loginRole').addEventListener('change', function(e) {
+                const passContainer = document.getElementById('passwordContainer');
+                if (e.target.value === 'admin_leader') {
+                    passContainer.classList.remove('hidden');
                 } else {
-                    await signInAnonymously(auth);
+                    passContainer.classList.add('hidden');
                 }
-            } catch (err) {
-                console.error("Auth error:", err);
+            });
+
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
             }
+
+            // Dengar perubahan data real-time dari cloud database
+            setupRealtimeSync();
+        };
+
+        function setupRealtimeSync() {
+            const dbRef = db.ref('toyoplas_production');
+            dbRef.on('value', (snapshot) => {
+                const serverData = snapshot.val();
+                if (serverData) {
+                    globalDatabaseCache = serverData;
+                } else {
+                    globalDatabaseCache = createInitialDataLocal();
+                    dbRef.set(globalDatabaseCache);
+                }
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Data Tersinkronisasi Otomatis';
+                renderAll();
+            }, (error) => {
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-300"></i> Mode Offline (Lokal)';
+                globalDatabaseCache = JSON.parse(localStorage.getItem('toyoplas_db_v3')) || createInitialDataLocal();
+                renderAll();
+            });
         }
 
-        // Jalankan Autentikasi
-        initAuth();
+        function createInitialDataLocal() {
+            const date = new Date().toISOString().split('T')[0];
+            const data = {};
+            data[date] = [];
 
-        // Mendapatkan Data Inisial Default untuk 18 Mesin
-        function getDefaultMachinesData() {
-            const result = [];
             for (let i = 1; i <= 18; i++) {
                 const machineNum = String(i).padStart(2, '0');
                 const hourly = {};
-                window.SHIFTS.forEach(shift => {
+                SHIFTS.forEach(shift => {
                     hourly[shift] = { raw: 0, finish: 0 };
                 });
-                result.push({
+
+                data[date].push({
                     machine: `MC-${machineNum}`,
                     operator: `Operator ${machineNum}`,
                     target: 100,
                     hourly: hourly
                 });
             }
-            return result;
+            return data;
         }
 
-        // Setup Firestore Listener secara Realtime
-        window.setupRealtimeListener = function() {
-            const selectedDate = document.getElementById('selectedDate').value;
-            if (!selectedDate) return;
+        function handleLogin() {
+            const role = document.getElementById('loginRole').value;
+            const pass = document.getElementById('loginPassword').value;
+            const err = document.getElementById('loginError');
 
-            // Hentikan listener lama jika ada
-            if (window.unsubscribeListener) {
-                window.unsubscribeListener();
-            }
-
-            const syncSpinner = document.getElementById('syncSpinner');
-            if (syncSpinner) syncSpinner.style.display = 'inline-block';
-
-            // Menggunakan Jalur Firestore
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'daily_production', selectedDate);
-
-            window.unsubscribeListener = onSnapshot(docRef, (docSnap) => {
-                if (syncSpinner) syncSpinner.style.display = 'none';
-
-                if (docSnap.exists() && docSnap.data()?.machines) {
-                    window.currentData = docSnap.data().machines;
+            if (role === 'admin_leader') {
+                if (pass === 'assemblyline5') {
+                    currentRole = 'admin_leader';
+                    showDashboard('Admin / Leader');
                 } else {
-                    // Jika data belum ada untuk tanggal tersebut, buatkan struktur awal
-                    window.currentData = getDefaultMachinesData();
-                    window.saveDataToCloud();
+                    err.classList.remove('hidden');
                 }
-                window.renderAll();
-            }, (error) => {
-                console.error("Firestore Listener Error:", error);
-                if (syncSpinner) syncSpinner.style.display = 'none';
-            });
-        };
-
-        // Fungsi Menyimpan Data ke Cloud Firestore
-        window.saveDataToCloud = async function() {
-            const selectedDate = document.getElementById('selectedDate').value;
-            if (!selectedDate || !auth.currentUser) return;
-
-            const syncSpinner = document.getElementById('syncSpinner');
-            if (syncSpinner) syncSpinner.style.display = 'inline-block';
-
-            try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'daily_production', selectedDate);
-                await setDoc(docRef, {
-                    machines: window.currentData,
-                    lastUpdated: new Date().toISOString()
-                }, { merge: true });
-            } catch (err) {
-                console.error("Gagal menyimpan ke Firestore:", err);
-            } finally {
-                if (syncSpinner) syncSpinner.style.display = 'none';
+            } else {
+                currentRole = 'operator';
+                showDashboard('Operator');
             }
-        };
+        }
 
-        // Render Seluruh Tampilan
-        window.renderAll = function() {
-            window.renderTable();
-            window.renderKPIAndCharts();
-        };
+        function showDashboard(roleName) {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('dashboardScreen').classList.remove('hidden');
+            document.getElementById('roleBadge').innerText = roleName;
+            renderAll();
+        }
 
-        // Render Tabel
-        window.renderTable = function() {
+        function handleLogout() {
+            document.getElementById('dashboardScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function getTodayData() {
+            const date = document.getElementById('selectedDate').value;
+            if (!globalDatabaseCache[date]) {
+                globalDatabaseCache[date] = [];
+                for (let i = 1; i <= 18; i++) {
+                    const machineNum = String(i).padStart(2, '0');
+                    const hourly = {};
+                    SHIFTS.forEach(shift => hourly[shift] = { raw: 0, finish: 0 });
+                    globalDatabaseCache[date].push({
+                        machine: `MC-${machineNum}`,
+                        operator: `Operator ${machineNum}`,
+                        target: 100,
+                        hourly: hourly
+                    });
+                }
+                saveDB();
+            }
+            return globalDatabaseCache[date];
+        }
+
+        function saveDB() {
+            localStorage.setItem('toyoplas_db_v3', JSON.stringify(globalDatabaseCache));
+            // Kirim ke Firebase Cloud secara real-time
+            db.ref('toyoplas_production').set(globalDatabaseCache).catch(() => {});
+        }
+
+        function renderAll() {
+            renderTable();
+            renderKPIAndCharts();
+        }
+
+        function renderTable() {
+            const data = getTodayData();
             const tbody = document.getElementById('tableBody');
-            if (!tbody) return;
             tbody.innerHTML = '';
-
-            const data = window.currentData || [];
 
             data.forEach((item, index) => {
                 let totalRaw = 0;
@@ -397,8 +411,8 @@
 
                 Object.keys(item.hourly || {}).forEach(shift => {
                     if (!shift.includes('ISTIRAHAT')) {
-                        totalRaw += Number(item.hourly[shift]?.raw || 0);
-                        totalFinish += Number(item.hourly[shift]?.finish || 0);
+                        totalRaw += Number(item.hourly[shift].raw || 0);
+                        totalFinish += Number(item.hourly[shift].finish || 0);
                     }
                 });
 
@@ -409,10 +423,10 @@
                 if (efficiency >= 90) effColor = 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
                 else if (efficiency >= 75) effColor = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';
 
-                const isEditable = (window.currentRole === 'admin_leader');
+                const isEditable = (currentRole === 'admin_leader');
 
                 let hourlyHTML = '';
-                window.SHIFTS.forEach(shift => {
+                SHIFTS.forEach(shift => {
                     const isBreak = shift.includes('ISTIRAHAT');
                     const rawVal = item.hourly[shift]?.raw || 0;
                     const finishVal = item.hourly[shift]?.finish || 0;
@@ -423,8 +437,8 @@
                         hourlyHTML += `
                             <div class="flex items-center gap-2 py-0.5 border-b border-gray-100 dark:border-gray-700/50">
                                 <span class="w-24 text-[10px] text-gray-500 dark:text-gray-400">${shift}:</span>
-                                <input type="number" value="${rawVal}" placeholder="Raw" onchange="window.updateHourly(${index}, '${shift}', 'raw', this.value)" class="w-14 px-1 text-center text-[10px] border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-1 focus:ring-blue-500">
-                                <input type="number" value="${finishVal}" placeholder="OK" onchange="window.updateHourly(${index}, '${shift}', 'finish', this.value)" class="w-14 px-1 text-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-1 focus:ring-blue-500">
+                                <input type="number" value="${rawVal}" placeholder="Raw" oninput="updateHourly(${index}, '${shift}', 'raw', this.value)" class="w-14 px-1 text-center text-[10px] border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600">
+                                <input type="number" value="${finishVal}" placeholder="OK" oninput="updateHourly(${index}, '${shift}', 'finish', this.value)" class="w-14 px-1 text-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600">
                             </div>
                         `;
                     }
@@ -438,7 +452,7 @@
                     <td class="p-3">
                         <div class="mb-2">
                             ${isEditable ? 
-                                `<input type="text" value="${item.operator}" onchange="window.updateOperator(${index}, this.value)" class="w-full px-2 py-1 border rounded text-xs font-semibold dark:bg-gray-700 border-gray-300 dark:border-gray-600">` : 
+                                `<input type="text" value="${item.operator}" onchange="updateOperator(${index}, this.value)" class="w-full px-2 py-1 border rounded text-xs font-semibold dark:bg-gray-700 border-gray-300 dark:border-gray-600">` : 
                                 `<span class="font-bold text-blue-600 dark:text-blue-400">${item.operator}</span>`
                             }
                         </div>
@@ -448,7 +462,7 @@
                     </td>
                     <td class="p-3 text-center">
                         ${isEditable ? 
-                            `<input type="number" value="${item.target}" onchange="window.updateTarget(${index}, this.value)" class="w-16 text-center px-2 py-1 border rounded text-xs font-bold dark:bg-gray-700 border-gray-300 dark:border-gray-600">` : 
+                            `<input type="number" value="${item.target}" onchange="updateTarget(${index}, this.value)" class="w-16 text-center px-2 py-1 border rounded text-xs font-bold dark:bg-gray-700 border-gray-300 dark:border-gray-600">` : 
                             `<span class="font-bold">${item.target}</span>`
                         }
                     </td>
@@ -461,39 +475,31 @@
                 `;
                 tbody.appendChild(tr);
             });
-        };
+        }
 
-        // Input Modifikasi & Update Langsung Realtime
-        window.updateOperator = function(index, val) {
-            if (window.currentData[index]) {
-                window.currentData[index].operator = val;
-                window.renderKPIAndCharts();
-                window.saveDataToCloud();
-            }
-        };
+        function updateOperator(index, val) {
+            const data = getTodayData();
+            data[index].operator = val;
+            saveDB();
+        }
 
-        window.updateTarget = function(index, val) {
-            if (window.currentData[index]) {
-                window.currentData[index].target = Number(val) || 0;
-                window.renderKPIAndCharts();
-                window.saveDataToCloud();
-            }
-        };
+        function updateTarget(index, val) {
+            const data = getTodayData();
+            data[index].target = Number(val) || 0;
+            saveDB();
+            renderAll();
+        }
 
-        window.updateHourly = function(index, shift, field, val) {
-            if (window.currentData[index]) {
-                if (!window.currentData[index].hourly[shift]) {
-                    window.currentData[index].hourly[shift] = { raw: 0, finish: 0 };
-                }
-                window.currentData[index].hourly[shift][field] = Number(val) || 0;
-                window.renderAll();
-                window.saveDataToCloud();
-            }
-        };
+        function updateHourly(index, shift, field, val) {
+            const data = getTodayData();
+            if (!data[index].hourly[shift]) data[index].hourly[shift] = { raw: 0, finish: 0 };
+            data[index].hourly[shift][field] = Number(val) || 0;
+            saveDB();
+            renderKPIAndCharts();
+        }
 
-        // Render KPI & Charts
-        window.renderKPIAndCharts = function() {
-            const data = window.currentData || [];
+        function renderKPIAndCharts() {
+            const data = getTodayData();
             let totalTarget = 0;
             let totalOutput = 0;
             let totalRaw = 0;
@@ -507,8 +513,8 @@
                 let mRaw = 0;
                 Object.keys(item.hourly || {}).forEach(shift => {
                     if (!shift.includes('ISTIRAHAT')) {
-                        mRaw += Number(item.hourly[shift]?.raw || 0);
-                        mOutput += Number(item.hourly[shift]?.finish || 0);
+                        mRaw += Number(item.hourly[shift].raw || 0);
+                        mOutput += Number(item.hourly[shift].finish || 0);
                     }
                 });
 
@@ -529,156 +535,85 @@
             document.getElementById('kpiReject').innerText = totalReject.toLocaleString('id-ID');
             document.getElementById('kpiEfficiency').innerText = `${avgEfficiency}%`;
 
-            // Chart 1: Per Mesin
-            const ctx1 = document.getElementById('machineChart')?.getContext('2d');
-            if (ctx1) {
-                if (window.machineChart) window.machineChart.destroy();
-                window.machineChart = new Chart(ctx1, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            { label: 'Target', data: targets, backgroundColor: '#3B82F6' },
-                            { label: 'Barang OK', data: outputs, backgroundColor: '#10B981' }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { position: 'top' } }
-                    }
-                });
-            }
+            const ctx1 = document.getElementById('machineChart').getContext('2d');
+            if (machineChart) machineChart.destroy();
+            machineChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Target', data: targets, backgroundColor: '#3B82F6' },
+                        { label: 'Barang OK', data: outputs, backgroundColor: '#10B981' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } }
+                }
+            });
 
-            // Chart 2: Per Jam Kerja
-            const hourlyTotals = window.SHIFTS.filter(s => !s.includes('ISTIRAHAT')).map(shift => {
+            const hourlyTotals = SHIFTS.filter(s => !s.includes('ISTIRAHAT')).map(shift => {
                 return data.reduce((acc, curr) => acc + Number(curr.hourly[shift]?.finish || 0), 0);
             });
 
-            const ctx2 = document.getElementById('hourlyChart')?.getContext('2d');
-            if (ctx2) {
-                if (window.hourlyChart) window.hourlyChart.destroy();
-                window.hourlyChart = new Chart(ctx2, {
-                    type: 'line',
-                    data: {
-                        labels: window.SHIFTS.filter(s => !s.includes('ISTIRAHAT')),
-                        datasets: [{
-                            label: 'Total Barang OK / Jam',
-                            data: hourlyTotals,
-                            borderColor: '#10B981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            fill: true,
-                            tension: 0.3
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { position: 'top' } }
-                    }
-                });
-            }
-        };
-    </script>
-
-    <!-- SCRIPT LOGIKA ANTARMUKA LOKAL -->
-    <script>
-        window.onload = function() {
-            document.getElementById('selectedDate').value = new Date().toISOString().split('T')[0];
-            
-            document.getElementById('loginRole').addEventListener('change', function(e) {
-                const passContainer = document.getElementById('passwordContainer');
-                if (e.target.value === 'admin_leader') {
-                    passContainer.classList.remove('hidden');
-                } else {
-                    passContainer.classList.add('hidden');
+            const ctx2 = document.getElementById('hourlyChart').getContext('2d');
+            if (hourlyChart) hourlyChart.destroy();
+            hourlyChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: SHIFTS.filter(s => !s.includes('ISTIRAHAT')),
+                    datasets: [{
+                        label: 'Total Barang OK / Jam',
+                        data: hourlyTotals,
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } }
                 }
             });
-
-            if (localStorage.getItem('theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
-        };
-
-        function handleLogin() {
-            const role = document.getElementById('loginRole').value;
-            const pass = document.getElementById('loginPassword').value;
-            const err = document.getElementById('loginError');
-
-            if (role === 'admin_leader') {
-                if (pass === 'assemblyline5') {
-                    window.currentRole = 'admin_leader';
-                    showDashboard('Admin / Leader');
-                } else {
-                    err.classList.remove('hidden');
-                }
-            } else {
-                window.currentRole = 'operator';
-                showDashboard('Operator');
-            }
         }
 
-        function showDashboard(roleName) {
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('dashboardScreen').classList.remove('hidden');
-            document.getElementById('roleBadge').innerText = roleName;
-            
-            // Hubungkan listener Firestore saat masuk
-            if (window.setupRealtimeListener) {
-                window.setupRealtimeListener();
-            }
-        }
-
-        function handleLogout() {
-            document.getElementById('dashboardScreen').classList.add('hidden');
-            document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('loginError').classList.add('hidden');
-            if (window.unsubscribeListener) {
-                window.unsubscribeListener();
-            }
-        }
-
-        function showModal(msg) {
-            document.getElementById('modalMessage').innerText = msg;
-            document.getElementById('customModal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('customModal').classList.add('hidden');
-        }
-
-        function shareGeneral() {
+        function generateShareSummaryText() {
             const date = document.getElementById('selectedDate').value;
             const target = document.getElementById('kpiTarget').innerText;
             const output = document.getElementById('kpiOutput').innerText;
             const reject = document.getElementById('kpiReject').innerText;
             const eff = document.getElementById('kpiEfficiency').innerText;
 
-            const text = `📊 *LAPORAN PRODUKSI - PT TOYOPLAS MANUFACTURING INDONESIA*\n` +
-                         `🏭 *Assembly Line 5*\n` +
-                         `📅 Tanggal: ${date}\n` +
-                         `----------------------------------------\n` +
-                         `🎯 Total Target: ${target} pcs\n` +
-                         `✅ Barang OK: ${output} pcs\n` +
-                         `❌ Barang NG (Reject): ${reject} pcs\n` +
-                         `📈 Rata-Rata Efisiensi: ${eff}\n` +
-                         `----------------------------------------\n` +
-                         `*Laporan Realtime Cloud Assembly Line 5.*`;
+            return `📊 *LAPORAN PRODUKSI - PT TOYOPLAS MANUFACTURING INDONESIA*\n` +
+                   `🏭 *Assembly Line 5*\n` +
+                   `📅 Tanggal: ${date}\n` +
+                   `----------------------------------------\n` +
+                   `🎯 Total Target: ${target} pcs\n` +
+                   `✅ Barang OK: ${output} pcs\n` +
+                   `❌ Barang NG (Reject): ${reject} pcs\n` +
+                   `📈 Rata-Rata Efisiensi: ${eff}\n` +
+                   `----------------------------------------\n` +
+                   `*Laporan dikirim otomatis dari Dashboard Assembly Line 5.*`;
+        }
 
+        function shareGeneral() {
+            const text = generateShareSummaryText();
             if (navigator.share) {
                 navigator.share({
                     title: 'Laporan Produksi Toyoplas Line 5',
                     text: text
                 }).catch(() => {});
             } else {
-                document.execCommand('copy');
-                showModal('Ringkasan laporan produksi telah disalin ke clipboard! Anda dapat menempelkannya di WhatsApp.');
+                navigator.clipboard.writeText(text);
+                alert('Ringkasan laporan produksi telah disalin ke clipboard! Anda dapat menempelkannya di WhatsApp, Email, atau aplikasi lainnya.');
             }
         }
 
         function exportToExcel() {
-            const data = window.currentData || [];
+            const data = getTodayData();
             const date = document.getElementById('selectedDate').value;
             
             const rows = [];
@@ -686,8 +621,8 @@
                 let tRaw = 0, tFinish = 0;
                 Object.keys(item.hourly || {}).forEach(shift => {
                     if (!shift.includes('ISTIRAHAT')) {
-                        tRaw += Number(item.hourly[shift]?.raw || 0);
-                        tFinish += Number(item.hourly[shift]?.finish || 0);
+                        tRaw += Number(item.hourly[shift].raw || 0);
+                        tFinish += Number(item.hourly[shift].finish || 0);
                     }
                 });
                 const reject = tRaw - tFinish;
@@ -709,6 +644,37 @@
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Laporan Produksi");
             XLSX.writeFile(wb, `Laporan_Produksi_Toyoplas_Line5_${date}.xlsx`);
+        }
+
+        function exportBackupJSON() {
+            const jsonStr = JSON.stringify(globalDatabaseCache, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Backup_Data_Toyoplas_Line5_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        function importBackupJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (typeof imported === 'object') {
+                        globalDatabaseCache = imported;
+                        saveDB();
+                        renderAll();
+                        alert('Data berhasil dipulihkan dan disinkronkan ke Cloud!');
+                    }
+                } catch (err) {
+                    alert('Format file JSON tidak valid!');
+                }
+            };
+            reader.readAsText(file);
         }
 
         function toggleDarkMode() {
