@@ -82,33 +82,39 @@
     <div id="dashboardScreen" class="hidden min-h-screen flex flex-col">
         <!-- HEADER NAVBAR -->
         <header class="bg-brandBlue text-white shadow-lg sticky top-0 z-40">
-            <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="bg-white p-2 rounded-lg shadow-inner flex items-center justify-center">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
+                
+                <!-- KIRI/KOSONG UNTUK KESEIMBANGAN DESKTOP -->
+                <div class="hidden md:flex items-center gap-2">
+                    <span id="roleBadge" class="bg-blue-800 px-2.5 py-1 rounded text-xs font-semibold uppercase tracking-wider text-yellow-300"></span>
+                    <span id="syncStatus" class="text-emerald-300 text-xs"><i class="fas fa-circle-notch fa-spin"></i> Menghubungkan Cloud...</span>
+                </div>
+
+                <!-- TENGAH: LOGO DAN JUDUL (RATA TENGAH) -->
+                <div class="flex flex-col items-center text-center">
+                    <div class="bg-white p-2 rounded-lg shadow-inner inline-flex items-center justify-center mb-1">
                         <svg class="h-10 w-auto" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <text x="15" y="65" font-family="'Brush Script MT', cursive, sans-serif" font-weight="bold" font-style="italic" font-size="68" fill="#E30613">70Y0</text>
                             <text x="15" y="102" font-family="'Arial Black', sans-serif" font-weight="900" font-size="34" fill="#002B66" letter-spacing="1">TOYOPLAS</text>
                         </svg>
                     </div>
-                    <div>
-                        <h1 class="text-lg sm:text-xl font-bold tracking-wide">PT Toyoplas Manufacturing Indonesia</h1>
-                        <p class="text-xs text-blue-200 flex items-center gap-2 flex-wrap">
-                            <span>Assembly line 5</span>
-                            <span>•</span>
-                            <span id="roleBadge" class="bg-blue-800 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider text-yellow-300"></span>
-                            <span>•</span>
-                            <span id="syncStatus" class="text-emerald-300 text-[10px]"><i class="fas fa-circle-notch fa-spin"></i> Menghubungkan Cloud...</span>
-                        </p>
-                    </div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-wide">PT Toyoplas Manufacturing Indonesia</h1>
+                    <p class="text-xs text-blue-200">Assembly Line 5</p>
                 </div>
 
-                <div class="flex items-center gap-2 sm:gap-3">
+                <!-- KANAN: TOMBOL AKSI -->
+                <div class="flex items-center gap-2 sm:gap-3 flex-wrap justify-center">
+                    <div class="md:hidden flex items-center gap-2 w-full justify-center mb-1">
+                        <span id="roleBadgeMobile" class="bg-blue-800 px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider text-yellow-300"></span>
+                        <span id="syncStatusMobile" class="text-emerald-300 text-[10px]"><i class="fas fa-circle-notch fa-spin"></i> Menghubungkan...</span>
+                    </div>
+
                     <button onclick="shareGeneral()" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Bagikan Ringkasan Laporan ke WA / Lainnya">
-                        <i class="fas fa-share-alt"></i> <span class="hidden sm:inline">Bagikan Laporan</span>
+                        <i class="fas fa-share-alt"></i> <span class="hidden sm:inline">Bagikan</span>
                     </button>
 
                     <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Download Spreadsheet Excel">
-                        <i class="fas fa-file-excel"></i> <span class="hidden sm:inline">Export Excel</span>
+                        <i class="fas fa-file-excel"></i> <span class="hidden sm:inline">Excel</span>
                     </button>
 
                     <button onclick="toggleDarkMode()" class="bg-blue-800 hover:bg-blue-700 text-yellow-300 p-2 rounded-lg text-sm transition shadow" title="Ganti Mode Terang/Gelap">
@@ -309,6 +315,8 @@
                     dbRef.set(globalDatabaseCache);
                 }
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Data Tersinkronisasi Otomatis';
+                const syncMob = document.getElementById('syncStatusMobile');
+                if(syncMob) syncMob.innerHTML = '<i class="fas fa-check-circle"></i> Tersinkronisasi';
                 
                 if (!document.activeElement || document.activeElement.tagName !== 'INPUT') {
                     renderAll();
@@ -317,6 +325,9 @@
                 }
             }, (error) => {
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-300"></i> Mode Offline (Lokal)';
+                const syncMob = document.getElementById('syncStatusMobile');
+                if(syncMob) syncMob.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-300"></i> Offline';
+                
                 globalDatabaseCache = JSON.parse(localStorage.getItem('toyoplas_db_v4')) || createInitialDataLocal();
                 renderAll();
             });
@@ -372,6 +383,8 @@
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('dashboardScreen').classList.remove('hidden');
             document.getElementById('roleBadge').innerText = roleName;
+            const roleBadgeMob = document.getElementById('roleBadgeMobile');
+            if(roleBadgeMob) roleBadgeMob.innerText = roleName;
             renderAll();
         }
 
