@@ -51,7 +51,7 @@
             </div>
             
             <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-1">Assembly Line 5</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Sistem Monitoring Produksi Harian</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Sistem Monitoring Produksi 3 Shift</p>
 
             <div class="space-y-4 text-left">
                 <div>
@@ -126,20 +126,29 @@
         <!-- MAIN CONTAINER -->
         <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
             
+            <!-- TOOLBAR TANGGAL & PILIH SHIFT -->
             <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-center gap-4">
                     <div>
-                        <label class="block text-xs text-gray-500 dark:text-gray-400">Pilih Tanggal Produksi:</label>
+                        <label class="block text-xs text-gray-500 dark:text-gray-400">Pilih Tanggal:</label>
                         <input type="date" id="selectedDate" onchange="renderAll()" class="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 dark:text-gray-400">Pilih Shift Kerja:</label>
+                        <select id="selectedShift" onchange="renderAll()" class="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-gray-700 text-sm font-bold text-blue-700 dark:text-blue-300">
+                            <option value="Shift 1">Shift 1 (08:00 - 16:00)</option>
+                            <option value="Shift 2">Shift 2 (16:00 - 23:00)</option>
+                            <option value="Shift 3">Shift 3 (23:00 - 07:00)</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-2">
                     <button onclick="exportBackupJSON()" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition" title="Simpan data ke file komputer">
-                        <i class="fas fa-download"></i> Backup Data (.json)
+                        <i class="fas fa-download"></i> Backup (.json)
                     </button>
                     <label class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer flex items-center gap-1 transition" title="Buka data dari file komputer">
-                        <i class="fas fa-upload"></i> Restore Data
+                        <i class="fas fa-upload"></i> Restore
                         <input type="file" id="restoreFile" accept=".json" onchange="importBackupJSON(event)" class="hidden">
                     </label>
                 </div>
@@ -148,27 +157,27 @@
             <!-- KPI CARDS RINGKASAN -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border-l-4 border-blue-500">
-                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Total Target</p>
+                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Total Target Shift</p>
                     <h3 class="text-2xl font-bold text-gray-800 dark:text-white mt-1" id="kpiTarget">0</h3>
-                    <p class="text-[10px] text-gray-400 mt-1">pcs / hari</p>
+                    <p class="text-[10px] text-gray-400 mt-1">pcs / shift</p>
                 </div>
 
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border-l-4 border-emerald-500">
-                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Barang OK (Finish Output)</p>
+                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Barang OK (Finish)</p>
                     <h3 class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1" id="kpiOutput">0</h3>
-                    <p class="text-[10px] text-gray-400 mt-1">pcs barang bagus</p>
+                    <p class="text-[10px] text-gray-400 mt-1">pcs bagus shift ini</p>
                 </div>
 
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border-l-4 border-red-500">
-                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Total Barang NG (Reject)</p>
+                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Total Barang NG</p>
                     <h3 class="text-2xl font-bold text-red-600 dark:text-red-400 mt-1" id="kpiReject">0</h3>
-                    <p class="text-[10px] text-gray-400 mt-1">pcs cacat harian</p>
+                    <p class="text-[10px] text-gray-400 mt-1">pcs cacat shift ini</p>
                 </div>
 
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border-l-4 border-yellow-500">
                     <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Rata-Rata Efisiensi</p>
                     <h3 class="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1" id="kpiEfficiency">0%</h3>
-                    <p class="text-[10px] text-gray-400 mt-1">performa 18 mesin</p>
+                    <p class="text-[10px] text-gray-400 mt-1">performa shift aktif</p>
                 </div>
             </div>
 
@@ -176,7 +185,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fas fa-chart-bar text-blue-500"></i> Perbandingan Target vs Barang OK Per MC
+                        <i class="fas fa-chart-bar text-blue-500"></i> Perbandingan Target vs Barang OK Per MC (Shift Aktif)
                     </h3>
                     <div class="h-64">
                         <canvas id="machineChart"></canvas>
@@ -185,7 +194,7 @@
 
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fas fa-chart-line text-emerald-500"></i> Tren Produksi Per Jam Kerja (08:00 - 16:00)
+                        <i class="fas fa-chart-line text-emerald-500"></i> Tren Produksi Per Jam (Shift Aktif)
                     </h3>
                     <div class="h-64">
                         <canvas id="hourlyChart"></canvas>
@@ -199,7 +208,7 @@
                     <h3 class="font-bold text-gray-800 dark:text-white flex items-center gap-2">
                         <i class="fas fa-list-alt text-brandBlue dark:text-blue-400"></i> Input Data 18 Mesin (MC-01 s.d. MC-18)
                     </h3>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">*Kolom NG diisi total cacat per mesin</span>
+                    <span id="activeShiftLabel" class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-gray-700 px-2 py-1 rounded">Shift 1</span>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -207,7 +216,7 @@
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 uppercase font-semibold">
                             <tr>
                                 <th class="p-3 border-b">Mesin</th>
-                                <th class="p-3 border-b">Operator & Jam Kerja (Raw / OK)</th>
+                                <th class="p-3 border-b">Operator & Rincian Jam Kerja (Raw / OK)</th>
                                 <th class="p-3 border-b text-center min-w-[90px]">Target (pcs)</th>
                                 <th class="p-3 border-b text-center min-w-[90px]">Total Raw</th>
                                 <th class="p-3 border-b text-center min-w-[90px]">Total OK</th>
@@ -228,6 +237,7 @@
         </footer>
     </div>
 
+    <!-- LOGIKA SKRIP APLIKASI & 3 SHIFT -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBayWf1wiJtDPfT7J3w0A3yCAJYAzLg-dA",
@@ -245,16 +255,21 @@
         }
         const db = firebase.database();
 
-        const SHIFTS = [
-            '08:00 - 09:00',
-            '09:00 - 10:00',
-            '10:00 - 11:00',
-            '11:00 - 12:00',
-            '12:00 - 13:00 (ISTIRAHAT)',
-            '13:00 - 14:00',
-            '14:00 - 15:00',
-            '15:00 - 16:00'
-        ];
+        // Rincian Jam Kerja per Shift
+        const SHIFTS_CONFIG = {
+            "Shift 1": [
+                '08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00',
+                '12:00 - 13:00 (ISTIRAHAT)', '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00'
+            ],
+            "Shift 2": [
+                '16:00 - 17:00', '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00 (ISTIRAHAT)',
+                '20:00 - 21:00', '21:00 - 22:00', '22:00 - 23:00'
+            ],
+            "Shift 3": [
+                '23:00 - 00:00', '00:00 - 01:00', '01:00 - 02:00 (ISTIRAHAT)',
+                '02:00 - 03:00', '03:00 - 04:00', '04:00 - 05:00', '05:00 - 06:00', '06:00 - 07:00'
+            ]
+        };
 
         let currentRole = null; 
         let machineChart = null;
@@ -281,7 +296,7 @@
         };
 
         function setupRealtimeSync() {
-            const dbRef = db.ref('toyoplas_production');
+            const dbRef = db.ref('toyoplas_production_v3');
             dbRef.on('value', (snapshot) => {
                 const serverData = snapshot.val();
                 if (serverData) {
@@ -299,7 +314,7 @@
                 }
             }, (error) => {
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-300"></i> Mode Offline (Lokal)';
-                globalDatabaseCache = JSON.parse(localStorage.getItem('toyoplas_db_v3')) || createInitialDataLocal();
+                globalDatabaseCache = JSON.parse(localStorage.getItem('toyoplas_db_v4')) || createInitialDataLocal();
                 renderAll();
             });
         }
@@ -307,23 +322,26 @@
         function createInitialDataLocal() {
             const date = new Date().toISOString().split('T')[0];
             const data = {};
-            data[date] = [];
+            data[date] = {};
 
-            for (let i = 1; i <= 18; i++) {
-                const machineNum = String(i).padStart(2, '0');
-                const hourly = {};
-                SHIFTS.forEach(shift => {
-                    hourly[shift] = { raw: 0, finish: 0 };
-                });
+            ['Shift 1', 'Shift 2', 'Shift 3'].forEach(shiftName => {
+                data[date][shiftName] = [];
+                for (let i = 1; i <= 18; i++) {
+                    const machineNum = String(i).padStart(2, '0');
+                    const hourly = {};
+                    SHIFTS_CONFIG[shiftName].forEach(shift => {
+                        hourly[shift] = { raw: 0, finish: 0 };
+                    });
 
-                data[date].push({
-                    machine: `MC-${machineNum}`,
-                    operator: `Operator ${machineNum}`,
-                    target: 100,
-                    totalReject: 0,
-                    hourly: hourly
-                });
-            }
+                    data[date][shiftName].push({
+                        machine: `MC-${machineNum}`,
+                        operator: `Operator ${machineNum}`,
+                        target: 100,
+                        totalReject: 0,
+                        hourly: hourly
+                    });
+                }
+            });
             return data;
         }
 
@@ -359,15 +377,20 @@
             document.getElementById('loginError').classList.add('hidden');
         }
 
-        function getTodayData() {
+        function getShiftData() {
             const date = document.getElementById('selectedDate').value;
+            const shift = document.getElementById('selectedShift').value;
+
             if (!globalDatabaseCache[date]) {
-                globalDatabaseCache[date] = [];
+                globalDatabaseCache[date] = {};
+            }
+            if (!globalDatabaseCache[date][shift]) {
+                globalDatabaseCache[date][shift] = [];
                 for (let i = 1; i <= 18; i++) {
                     const machineNum = String(i).padStart(2, '0');
                     const hourly = {};
-                    SHIFTS.forEach(shift => hourly[shift] = { raw: 0, finish: 0 });
-                    globalDatabaseCache[date].push({
+                    SHIFTS_CONFIG[shift].forEach(s => hourly[s] = { raw: 0, finish: 0 });
+                    globalDatabaseCache[date][shift].push({
                         machine: `MC-${machineNum}`,
                         operator: `Operator ${machineNum}`,
                         target: 100,
@@ -377,21 +400,25 @@
                 }
                 saveDB();
             }
-            return globalDatabaseCache[date];
+            return globalDatabaseCache[date][shift];
         }
 
         function saveDB() {
-            localStorage.setItem('toyoplas_db_v3', JSON.stringify(globalDatabaseCache));
-            db.ref('toyoplas_production').set(globalDatabaseCache).catch(() => {});
+            localStorage.setItem('toyoplas_db_v4', JSON.stringify(globalDatabaseCache));
+            db.ref('toyoplas_production_v3').set(globalDatabaseCache).catch(() => {});
         }
 
         function renderAll() {
+            const shiftName = document.getElementById('selectedShift').value;
+            document.getElementById('activeShiftLabel').innerText = shiftName;
             renderTable();
             renderKPIAndCharts();
         }
 
         function renderTable() {
-            const data = getTodayData();
+            const data = getShiftData();
+            const shiftName = document.getElementById('selectedShift').value;
+            const activeShifts = SHIFTS_CONFIG[shiftName];
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
@@ -416,7 +443,7 @@
                 const isEditable = (currentRole === 'admin_leader');
 
                 let hourlyHTML = '';
-                SHIFTS.forEach(shift => {
+                activeShifts.forEach(shift => {
                     const isBreak = shift.includes('ISTIRAHAT');
                     const rawVal = item.hourly[shift]?.raw || 0;
                     const finishVal = item.hourly[shift]?.finish || 0;
@@ -459,7 +486,7 @@
                     <td class="p-3 text-center font-semibold text-blue-600 dark:text-blue-400">${totalRaw}</td>
                     <td class="p-3 text-center font-bold text-emerald-600 dark:text-emerald-400">${totalFinish}</td>
                     <td class="p-3 text-center">
-                        <input type="number" value="${totalReject}" onchange="updateTotalReject(${index}, this.value)" class="w-20 px-2 py-1 text-center text-xs font-bold text-red-600 dark:text-red-400 border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600" title="Total NG Harian">
+                        <input type="number" value="${totalReject}" onchange="updateTotalReject(${index}, this.value)" class="w-20 px-2 py-1 text-center text-xs font-bold text-red-600 dark:text-red-400 border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600" title="Total NG Shift Ini">
                     </td>
                     <td class="p-3 text-center">
                         <span class="px-2 py-1 rounded-full text-[10px] font-bold ${effColor}">${efficiency}%</span>
@@ -470,27 +497,27 @@
         }
 
         function updateOperator(index, val) {
-            const data = getTodayData();
+            const data = getShiftData();
             data[index].operator = val;
             saveDB();
         }
 
         function updateTarget(index, val) {
-            const data = getTodayData();
+            const data = getShiftData();
             data[index].target = Number(val) || 0;
             saveDB();
             renderAll();
         }
 
         function updateTotalReject(index, val) {
-            const data = getTodayData();
+            const data = getShiftData();
             data[index].totalReject = Number(val) || 0;
             saveDB();
             renderKPIAndCharts();
         }
 
         function updateHourly(index, shift, field, val) {
-            const data = getTodayData();
+            const data = getShiftData();
             if (!data[index].hourly[shift]) data[index].hourly[shift] = { raw: 0, finish: 0 };
             data[index].hourly[shift][field] = Number(val) || 0;
             saveDB();
@@ -498,7 +525,7 @@
         }
 
         function renderKPIAndCharts() {
-            const data = getTodayData();
+            const data = getShiftData();
             let totalTarget = 0;
             let totalOutput = 0;
             let totalReject = 0;
@@ -549,7 +576,9 @@
                 }
             });
 
-            const hourlyTotals = SHIFTS.filter(s => !s.includes('ISTIRAHAT')).map(shift => {
+            const shiftName = document.getElementById('selectedShift').value;
+            const activeShifts = SHIFTS_CONFIG[shiftName].filter(s => !s.includes('ISTIRAHAT'));
+            const hourlyTotals = activeShifts.map(shift => {
                 return data.reduce((acc, curr) => acc + Number(curr.hourly[shift]?.finish || 0), 0);
             });
 
@@ -558,7 +587,7 @@
             hourlyChart = new Chart(ctx2, {
                 type: 'line',
                 data: {
-                    labels: SHIFTS.filter(s => !s.includes('ISTIRAHAT')),
+                    labels: activeShifts,
                     datasets: [{
                         label: 'Total Barang OK / Jam',
                         data: hourlyTotals,
@@ -578,13 +607,14 @@
 
         function generateShareSummaryText() {
             const date = document.getElementById('selectedDate').value;
+            const shift = document.getElementById('selectedShift').value;
             const target = document.getElementById('kpiTarget').innerText;
             const output = document.getElementById('kpiOutput').innerText;
             const reject = document.getElementById('kpiReject').innerText;
             const eff = document.getElementById('kpiEfficiency').innerText;
 
-            return `📊 *LAPORAN PRODUKSI - PT TOYOPLAS MANUFACTURING INDONESIA*\n` +
-                   `🏭 *Assembly Line 5*\n` +
+            return `📊 *LAPORAN PRODUKSI - PT TOYOPLAS*\n` +
+                   `🏭 *Assembly Line 5* (${shift})\n` +
                    `📅 Tanggal: ${date}\n` +
                    `----------------------------------------\n` +
                    `🎯 Total Target: ${target} pcs\n` +
@@ -592,7 +622,7 @@
                    `❌ Total Barang NG: ${reject} pcs\n` +
                    `📈 Rata-Rata Efisiensi: ${eff}\n` +
                    `----------------------------------------\n` +
-                   `*Laporan dikirim otomatis dari Dashboard Assembly Line 5.*`;
+                   `*Laporan dikirim otomatis dari Dashboard Line 5.*`;
         }
 
         function shareGeneral() {
@@ -604,21 +634,22 @@
                 }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(text);
-                alert('Ringkasan laporan produksi telah disalin ke clipboard! Anda dapat menempelkannya di WhatsApp, Email, atau aplikasi lainnya.');
+                alert('Ringkasan laporan shift telah disalin ke clipboard!');
             }
         }
 
         function exportToExcel() {
-            const data = getTodayData();
+            const data = getShiftData();
             const date = document.getElementById('selectedDate').value;
+            const shift = document.getElementById('selectedShift').value;
             
             const rows = [];
             data.forEach((item, index) => {
                 let tRaw = 0, tFinish = 0;
-                Object.keys(item.hourly || {}).forEach(shift => {
-                    if (!shift.includes('ISTIRAHAT')) {
-                        tRaw += Number(item.hourly[shift].raw || 0);
-                        tFinish += Number(item.hourly[shift].finish || 0);
+                Object.keys(item.hourly || {}).forEach(s => {
+                    if (!s.includes('ISTIRAHAT')) {
+                        tRaw += Number(item.hourly[s].raw || 0);
+                        tFinish += Number(item.hourly[s].finish || 0);
                     }
                 });
                 const tReject = Number(item.totalReject || 0);
@@ -638,8 +669,8 @@
 
             const ws = XLSX.utils.json_to_sheet(rows);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Laporan Produksi");
-            XLSX.writeFile(wb, `Laporan_Produksi_Toyoplas_Line5_${date}.xlsx`);
+            XLSX.utils.book_append_sheet(wb, ws, `${shift}`);
+            XLSX.writeFile(wb, `Laporan_Produksi_Toyoplas_Line5_${shift}_${date}.xlsx`);
         }
 
         function exportBackupJSON() {
@@ -648,7 +679,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Backup_Data_Toyoplas_Line5_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `Backup_Data_3Shift_Toyoplas_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
         }
 
@@ -664,7 +695,7 @@
                         globalDatabaseCache = imported;
                         saveDB();
                         renderAll();
-                        alert('Data berhasil dipulihkan dan disinkronkan ke Cloud!');
+                        alert('Data 3 Shift berhasil dipulihkan dan disinkronkan ke Cloud!');
                     }
                 } catch (err) {
                     alert('Format file JSON tidak valid!');
