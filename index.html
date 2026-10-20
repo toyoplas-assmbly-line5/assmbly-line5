@@ -41,11 +41,10 @@
     <!-- SCREEN 1: LAYAR LOGIN -->
     <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center login-bg p-4">
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md text-center border border-gray-200 dark:border-gray-700">
-            
-            <!-- LOGO TOYOPLAS PRESISI RATA TENGAH -->
-            <div class="mb-6 flex justify-center items-center">
-                <div class="p-3 bg-white rounded-xl shadow-md border border-gray-100 flex items-center justify-center">
-                    <svg class="h-16 w-auto block mx-auto" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="mb-6 flex justify-center">
+                <div class="p-3 bg-white rounded-xl shadow-md border border-gray-100 inline-block">
+                    <!-- LOGO RATA TENGAH -->
+                    <svg class="h-16 w-auto" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <text x="160" y="65" text-anchor="middle" font-family="'Brush Script MT', 'Comic Sans MS', cursive, sans-serif" font-weight="bold" font-style="italic" font-size="68" fill="#E30613">70Y0</text>
                         <text x="160" y="102" text-anchor="middle" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="34" fill="#002B66" letter-spacing="1">TOYOPLAS</text>
                     </svg>
@@ -82,48 +81,47 @@
 
     <!-- SCREEN 2: MAIN DASHBOARD -->
     <div id="dashboardScreen" class="hidden min-h-screen flex flex-col">
-        <!-- HEADER NAVBAR (3-COLUMN GRID SIMETRIS DENGAN LOGO RATA TENGAH) -->
-        <header class="bg-brandBlue text-white shadow-lg sticky top-0 z-40 py-3">
-            <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 items-center gap-4">
-                
-                <!-- KOLOM 1 (KIRI): STATUS BADGE & KONEKSI CLOUD -->
-                <div class="flex items-center justify-center md:justify-start gap-2">
-                    <span id="roleBadge" class="bg-blue-800 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-yellow-300 shadow-sm"></span>
-                    <span id="syncStatus" class="text-emerald-300 text-xs font-medium"><i class="fas fa-circle-notch fa-spin"></i> Menghubungkan...</span>
-                </div>
-
-                <!-- KOLOM 2 (TENGAH PRESISI): LOGO TOYOPLAS DAN JUDUL PT -->
-                <div class="flex flex-col items-center justify-center text-center">
-                    <div class="bg-white px-3 py-1.5 rounded-xl shadow-md inline-flex items-center justify-center mb-1.5">
-                        <svg class="h-9 w-auto block mx-auto" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- HEADER NAVBAR (KEMBALI KE SEMULA / DI KIRI) -->
+        <header class="bg-brandBlue text-white shadow-lg sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white p-2 rounded-lg shadow-inner flex items-center justify-center">
+                        <!-- LOGO RATA TENGAH -->
+                        <svg class="h-10 w-auto" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <text x="160" y="65" text-anchor="middle" font-family="'Brush Script MT', cursive, sans-serif" font-weight="bold" font-style="italic" font-size="68" fill="#E30613">70Y0</text>
                             <text x="160" y="102" text-anchor="middle" font-family="'Arial Black', sans-serif" font-weight="900" font-size="34" fill="#002B66" letter-spacing="1">TOYOPLAS</text>
                         </svg>
                     </div>
-                    <h1 class="text-sm sm:text-base font-extrabold tracking-wide text-white uppercase">PT Toyoplas Manufacturing Indonesia</h1>
-                    <p class="text-xs text-blue-200 font-semibold">Assembly Line 5</p>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold tracking-wide">PT Toyoplas Manufacturing Indonesia</h1>
+                        <p class="text-xs text-blue-200 flex items-center gap-2 flex-wrap">
+                            <span>Assembly line 5</span>
+                            <span>•</span>
+                            <span id="roleBadge" class="bg-blue-800 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider text-yellow-300"></span>
+                            <span>•</span>
+                            <span id="syncStatus" class="text-emerald-300 text-[10px]"><i class="fas fa-circle-notch fa-spin"></i> Menghubungkan Cloud...</span>
+                        </p>
+                    </div>
                 </div>
 
-                <!-- KOLOM 3 (KANAN): TOMBOL AKSI -->
-                <div class="flex items-center justify-center md:justify-end gap-2 sm:gap-2.5 flex-wrap">
-                    <button onclick="shareGeneral()" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Bagikan Ringkasan Laporan ke WA / Lainnya">
-                        <i class="fas fa-share-alt"></i> <span class="hidden sm:inline">Bagikan</span>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button onclick="shareGeneral()" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Bagikan Ringkasan Laporan ke WA / Lainnya">
+                        <i class="fas fa-share-alt"></i> <span class="hidden sm:inline">Bagikan Laporan</span>
                     </button>
 
-                    <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Download Spreadsheet Excel">
-                        <i class="fas fa-file-excel"></i> <span class="hidden sm:inline">Excel</span>
+                    <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Download Spreadsheet Excel">
+                        <i class="fas fa-file-excel"></i> <span class="hidden sm:inline">Export Excel</span>
                     </button>
 
-                    <button onclick="toggleDarkMode()" class="bg-blue-800 hover:bg-blue-700 text-yellow-300 p-2 rounded-lg text-xs transition shadow" title="Ganti Mode Terang/Gelap">
+                    <button onclick="toggleDarkMode()" class="bg-blue-800 hover:bg-blue-700 text-yellow-300 p-2 rounded-lg text-sm transition shadow" title="Ganti Mode Terang/Gelap">
                         <i class="fas fa-moon dark:hidden"></i>
                         <i class="fas fa-sun hidden dark:inline"></i>
                     </button>
 
-                    <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow">
+                    <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow">
                         <i class="fas fa-power-off"></i> <span class="hidden sm:inline">Keluar</span>
                     </button>
                 </div>
-
             </div>
         </header>
 
@@ -388,337 +386,4 @@
         }
 
         function getShiftData() {
-            const date = document.getElementById('selectedDate').value;
-            const shift = document.getElementById('selectedShift').value;
-
-            if (!globalDatabaseCache[date]) {
-                globalDatabaseCache[date] = {};
-            }
-            if (!globalDatabaseCache[date][shift]) {
-                globalDatabaseCache[date][shift] = [];
-                for (let i = 1; i <= 18; i++) {
-                    const machineNum = String(i).padStart(2, '0');
-                    const hourly = {};
-                    SHIFTS_CONFIG[shift].forEach(s => hourly[s] = { raw: 0, finish: 0 });
-                    globalDatabaseCache[date][shift].push({
-                        machine: `MC-${machineNum}`,
-                        operator: `Operator ${machineNum}`,
-                        target: 100,
-                        totalReject: 0,
-                        hourly: hourly
-                    });
-                }
-                saveDB();
-            }
-            return globalDatabaseCache[date][shift];
-        }
-
-        function saveDB() {
-            localStorage.setItem('toyoplas_db_v4', JSON.stringify(globalDatabaseCache));
-            db.ref('toyoplas_production_v3').set(globalDatabaseCache).catch(() => {});
-        }
-
-        function renderAll() {
-            const shiftName = document.getElementById('selectedShift').value;
-            document.getElementById('activeShiftLabel').innerText = shiftName;
-            renderTable();
-            renderKPIAndCharts();
-        }
-
-        function renderTable() {
-            const data = getShiftData();
-            const shiftName = document.getElementById('selectedShift').value;
-            const activeShifts = SHIFTS_CONFIG[shiftName];
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            data.forEach((item, index) => {
-                let totalRaw = 0;
-                let totalFinish = 0;
-
-                Object.keys(item.hourly || {}).forEach(shift => {
-                    if (!shift.includes('ISTIRAHAT')) {
-                        totalRaw += Number(item.hourly[shift].raw || 0);
-                        totalFinish += Number(item.hourly[shift].finish || 0);
-                    }
-                });
-
-                const totalReject = Number(item.totalReject || 0);
-                const efficiency = item.target > 0 ? ((totalFinish / item.target) * 100).toFixed(1) : 0;
-
-                let effColor = 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
-                if (efficiency >= 90) effColor = 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
-                else if (efficiency >= 75) effColor = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';
-
-                const isEditable = (currentRole === 'admin_leader');
-
-                let hourlyHTML = '';
-                activeShifts.forEach(shift => {
-                    const isBreak = shift.includes('ISTIRAHAT');
-                    const rawVal = item.hourly[shift]?.raw || 0;
-                    const finishVal = item.hourly[shift]?.finish || 0;
-
-                    if (isBreak) {
-                        hourlyHTML += `<div class="text-[10px] text-orange-500 font-semibold py-0.5">${shift}</div>`;
-                    } else {
-                        hourlyHTML += `
-                            <div class="flex items-center gap-2 py-0.5 border-b border-gray-100 dark:border-gray-700/50">
-                                <span class="w-24 text-[10px] text-gray-500 dark:text-gray-400">${shift}:</span>
-                                <input type="number" value="${rawVal}" placeholder="Raw" onchange="updateHourly(${index}, '${shift}', 'raw', this.value)" class="w-16 px-1 text-center text-[10px] border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600" title="Raw Input">
-                                <input type="number" value="${finishVal}" placeholder="OK" onchange="updateHourly(${index}, '${shift}', 'finish', this.value)" class="w-16 px-1 text-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600" title="Barang OK">
-                            </div>
-                        `;
-                    }
-                });
-
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50 transition align-top';
-
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-gray-800 dark:text-white whitespace-nowrap">${item.machine}</td>
-                    <td class="p-3">
-                        <div class="mb-2">
-                            ${isEditable ? 
-                                `<input type="text" value="${item.operator}" onchange="updateOperator(${index}, this.value)" class="w-full px-2 py-1 border rounded text-xs font-semibold dark:bg-gray-700 border-gray-300 dark:border-gray-600">` : 
-                                `<span class="font-bold text-blue-600 dark:text-blue-400">${item.operator}</span>`
-                            }
-                        </div>
-                        <div class="bg-gray-50 dark:bg-gray-800/80 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
-                            ${hourlyHTML}
-                        </div>
-                    </td>
-                    <td class="p-3 text-center">
-                        ${isEditable ? 
-                            `<input type="number" value="${item.target}" onchange="updateTarget(${index}, this.value)" class="w-16 text-center px-2 py-1 border rounded text-xs font-bold dark:bg-gray-700 border-gray-300 dark:border-gray-600">` : 
-                            `<span class="font-bold">${item.target}</span>`
-                        }
-                    </td>
-                    <td class="p-3 text-center font-semibold text-blue-600 dark:text-blue-400">${totalRaw}</td>
-                    <td class="p-3 text-center font-bold text-emerald-600 dark:text-emerald-400">${totalFinish}</td>
-                    <td class="p-3 text-center">
-                        <input type="number" value="${totalReject}" onchange="updateTotalReject(${index}, this.value)" class="w-20 px-2 py-1 text-center text-xs font-bold text-red-600 dark:text-red-400 border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600" title="Total NG Shift Ini">
-                    </td>
-                    <td class="p-3 text-center">
-                        <span class="px-2 py-1 rounded-full text-[10px] font-bold ${effColor}">${efficiency}%</span>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function updateOperator(index, val) {
-            const data = getShiftData();
-            data[index].operator = val;
-            saveDB();
-        }
-
-        function updateTarget(index, val) {
-            const data = getShiftData();
-            data[index].target = Number(val) || 0;
-            saveDB();
-            renderAll();
-        }
-
-        function updateTotalReject(index, val) {
-            const data = getShiftData();
-            data[index].totalReject = Number(val) || 0;
-            saveDB();
-            renderKPIAndCharts();
-        }
-
-        function updateHourly(index, shift, field, val) {
-            const data = getShiftData();
-            if (!data[index].hourly[shift]) data[index].hourly[shift] = { raw: 0, finish: 0 };
-            data[index].hourly[shift][field] = Number(val) || 0;
-            saveDB();
-            renderAll();
-        }
-
-        function renderKPIAndCharts() {
-            const data = getShiftData();
-            let totalTarget = 0;
-            let totalOutput = 0;
-            let totalReject = 0;
-
-            const labels = [];
-            const targets = [];
-            const outputs = [];
-
-            data.forEach(item => {
-                let mOutput = 0;
-                Object.keys(item.hourly || {}).forEach(shift => {
-                    if (!shift.includes('ISTIRAHAT')) {
-                        mOutput += Number(item.hourly[shift].finish || 0);
-                    }
-                });
-
-                totalTarget += Number(item.target || 0);
-                totalOutput += mOutput;
-                totalReject += Number(item.totalReject || 0);
-
-                labels.push(item.machine);
-                targets.push(item.target);
-                outputs.push(mOutput);
-            });
-
-            const avgEfficiency = totalTarget > 0 ? ((totalOutput / totalTarget) * 100).toFixed(1) : 0;
-
-            document.getElementById('kpiTarget').innerText = totalTarget.toLocaleString('id-ID');
-            document.getElementById('kpiOutput').innerText = totalOutput.toLocaleString('id-ID');
-            document.getElementById('kpiReject').innerText = totalReject.toLocaleString('id-ID');
-            document.getElementById('kpiEfficiency').innerText = `${avgEfficiency}%`;
-
-            const ctx1 = document.getElementById('machineChart').getContext('2d');
-            if (machineChart) machineChart.destroy();
-            machineChart = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Target', data: targets, backgroundColor: '#3B82F6' },
-                        { label: 'Barang OK', data: outputs, backgroundColor: '#10B981' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top' } }
-                }
-            });
-
-            const shiftName = document.getElementById('selectedShift').value;
-            const activeShifts = SHIFTS_CONFIG[shiftName].filter(s => !s.includes('ISTIRAHAT'));
-            const hourlyTotals = activeShifts.map(shift => {
-                return data.reduce((acc, curr) => acc + Number(curr.hourly[shift]?.finish || 0), 0);
-            });
-
-            const ctx2 = document.getElementById('hourlyChart').getContext('2d');
-            if (hourlyChart) hourlyChart.destroy();
-            hourlyChart = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: activeShifts,
-                    datasets: [{
-                        label: 'Total Barang OK / Jam',
-                        data: hourlyTotals,
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top' } }
-                }
-            });
-        }
-
-        function generateShareSummaryText() {
-            const date = document.getElementById('selectedDate').value;
-            const shift = document.getElementById('selectedShift').value;
-            const target = document.getElementById('kpiTarget').innerText;
-            const output = document.getElementById('kpiOutput').innerText;
-            const reject = document.getElementById('kpiReject').innerText;
-            const eff = document.getElementById('kpiEfficiency').innerText;
-
-            return `📊 *LAPORAN PRODUKSI - PT TOYOPLAS*\n` +
-                   `🏭 *Assembly Line 5* (${shift})\n` +
-                   `📅 Tanggal: ${date}\n` +
-                   `----------------------------------------\n` +
-                   `🎯 Total Target: ${target} pcs\n` +
-                   `✅ Barang OK: ${output} pcs\n` +
-                   `❌ Total Barang NG: ${reject} pcs\n` +
-                   `📈 Rata-Rata Efisiensi: ${eff}\n` +
-                   `----------------------------------------\n` +
-                   `*Laporan dikirim otomatis dari Dashboard Line 5.*`;
-        }
-
-        function shareGeneral() {
-            const text = generateShareSummaryText();
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Laporan Produksi Toyoplas Line 5',
-                    text: text
-                }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(text);
-                alert('Ringkasan laporan shift telah disalin ke clipboard!');
-            }
-        }
-
-        function exportToExcel() {
-            const data = getShiftData();
-            const date = document.getElementById('selectedDate').value;
-            const shift = document.getElementById('selectedShift').value;
-            
-            const rows = [];
-            data.forEach((item, index) => {
-                let tRaw = 0, tFinish = 0;
-                Object.keys(item.hourly || {}).forEach(s => {
-                    if (!s.includes('ISTIRAHAT')) {
-                        tRaw += Number(item.hourly[s].raw || 0);
-                        tFinish += Number(item.hourly[s].finish || 0);
-                    }
-                });
-                const tReject = Number(item.totalReject || 0);
-                const eff = item.target > 0 ? ((tFinish / item.target) * 100).toFixed(1) + '%' : '0%';
-
-                rows.push({
-                    'No': index + 1,
-                    'Nama Mesin': item.machine,
-                    'Nama Operator': item.operator,
-                    'Target (pcs)': item.target,
-                    'Raw Input (pcs)': tRaw,
-                    'Barang OK (pcs)': tFinish,
-                    'Barang NG (pcs)': tReject,
-                    'Efisiensi (%)': eff
-                });
-            });
-
-            const ws = XLSX.utils.json_to_sheet(rows);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, `${shift}`);
-            XLSX.writeFile(wb, `Laporan_Produksi_Toyoplas_Line5_${shift}_${date}.xlsx`);
-        }
-
-        function exportBackupJSON() {
-            const jsonStr = JSON.stringify(globalDatabaseCache, null, 2);
-            const blob = new Blob([jsonStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Backup_Data_3Shift_Toyoplas_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-        }
-
-        function importBackupJSON(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (typeof imported === 'object') {
-                        globalDatabaseCache = imported;
-                        saveDB();
-                        renderAll();
-                        alert('Data 3 Shift berhasil dipulihkan dan disinkronkan ke Cloud!');
-                    }
-                } catch (err) {
-                    alert('Format file JSON tidak valid!');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
-    </script>
-</body>
-</html>
+            const date = document.getElementById
