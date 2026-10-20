@@ -71,7 +71,7 @@
                     <i class="fas fa-exclamation-circle mr-1"></i> Kata sandi salah! Silakan coba lagi.
                 </div>
 
-                <button onclick="handleLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition duration-200 mt-2 flex items-center justify-center gap-2">
+                <button id="btnLogin" onclick="handleLogin()" type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition duration-200 mt-2 flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fas fa-sign-in-alt"></i> Masuk Dashboard
                 </button>
             </div>
@@ -281,6 +281,9 @@
             
             document.getElementById('loginRole').addEventListener('change', function(e) {
                 const passContainer = document.getElementById('passwordContainer');
+                const err = document.getElementById('loginError');
+                if (err) err.classList.add('hidden');
+
                 if (e.target.value === 'admin_leader') {
                     passContainer.classList.remove('hidden');
                 } else {
@@ -353,12 +356,14 @@
             if (role === 'admin_leader') {
                 if (pass === 'assemblyline5') {
                     currentRole = 'admin_leader';
+                    if (err) err.classList.add('hidden');
                     showDashboard('Admin / Leader');
                 } else {
-                    err.classList.remove('hidden');
+                    if (err) err.classList.remove('hidden');
                 }
             } else {
                 currentRole = 'operator';
+                if (err) err.classList.add('hidden');
                 showDashboard('Operator');
             }
         }
@@ -374,7 +379,8 @@
             document.getElementById('dashboardScreen').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
             document.getElementById('loginPassword').value = '';
-            document.getElementById('loginError').classList.add('hidden');
+            const err = document.getElementById('loginError');
+            if (err) err.classList.add('hidden');
         }
 
         function getShiftData() {
