@@ -81,7 +81,7 @@
 
     <!-- SCREEN 2: MAIN DASHBOARD -->
     <div id="dashboardScreen" class="hidden min-h-screen flex flex-col">
-        <!-- HEADER NAVBAR (KEMBALI KE LAYOUT SEMULA / DI KIRI) -->
+        <!-- HEADER NAVBAR -->
         <header class="bg-brandBlue text-white shadow-lg sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
@@ -386,8 +386,11 @@
         }
 
         function getShiftData() {
-            const date = document.getElementById('selectedDate').value;
-            const shift = document.getElementById('selectedShift').value;
+            const dateInput = document.getElementById('selectedDate');
+            const shiftInput = document.getElementById('selectedShift');
+            
+            const date = dateInput && dateInput.value ? dateInput.value : new Date().toISOString().split('T')[0];
+            const shift = shiftInput && shiftInput.value ? shiftInput.value : 'Shift 1';
 
             if (!globalDatabaseCache[date]) {
                 globalDatabaseCache[date] = {};
@@ -418,7 +421,8 @@
 
         function renderAll() {
             const shiftName = document.getElementById('selectedShift').value;
-            document.getElementById('activeShiftLabel').innerText = shiftName;
+            const activeLabel = document.getElementById('activeShiftLabel');
+            if(activeLabel) activeLabel.innerText = shiftName;
             renderTable();
             renderKPIAndCharts();
         }
@@ -428,6 +432,7 @@
             const shiftName = document.getElementById('selectedShift').value;
             const activeShifts = SHIFTS_CONFIG[shiftName];
             const tbody = document.getElementById('tableBody');
+            if(!tbody) return;
             tbody.innerHTML = '';
 
             data.forEach((item, index) => {
@@ -561,28 +566,36 @@
 
             const avgEfficiency = totalTarget > 0 ? ((totalOutput / totalTarget) * 100).toFixed(1) : 0;
 
-            document.getElementById('kpiTarget').innerText = totalTarget.toLocaleString('id-ID');
-            document.getElementById('kpiOutput').innerText = totalOutput.toLocaleString('id-ID');
-            document.getElementById('kpiReject').innerText = totalReject.toLocaleString('id-ID');
-            document.getElementById('kpiEfficiency').innerText = `${avgEfficiency}%`;
+            const elTarget = document.getElementById('kpiTarget');
+            const elOutput = document.getElementById('kpiOutput');
+            const elReject = document.getElementById('kpiReject');
+            const elEff = document.getElementById('kpiEfficiency');
 
-            const ctx1 = document.getElementById('machineChart').getContext('2d');
-            if (machineChart) machineChart.destroy();
-            machineChart = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Target', data: targets, backgroundColor: '#3B82F6' },
-                        { label: 'Barang OK', data: outputs, backgroundColor: '#10B981' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top' } }
-                }
-            });
+            if(elTarget) elTarget.innerText = totalTarget.toLocaleString('id-ID');
+            if(elOutput) elOutput.innerText = totalOutput.toLocaleString('id-ID');
+            if(elReject) elReject.innerText = totalReject.toLocaleString('id-ID');
+            if(elEff) elEff.innerText = `${avgEfficiency}%`;
+
+            const canvas1 = document.getElementById('machineChart');
+            if(canvas1) {
+                const ctx1 = canvas1.getContext('2d');
+                if (machineChart) machineChart.destroy();
+                machineChart = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Target', data: targets, backgroundColor: '#3B82F6' },
+                            { label: 'Barang OK', data: outputs, backgroundColor: '#10B981' }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top' } }
+                    }
+                });
+            }
 
             const shiftName = document.getElementById('selectedShift').value;
             const activeShifts = SHIFTS_CONFIG[shiftName].filter(s => !s.includes('ISTIRAHAT'));
@@ -590,27 +603,30 @@
                 return data.reduce((acc, curr) => acc + Number(curr.hourly[shift]?.finish || 0), 0);
             });
 
-            const ctx2 = document.getElementById('hourlyChart').getContext('2d');
-            if (hourlyChart) hourlyChart.destroy();
-            hourlyChart = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: activeShifts,
-                    datasets: [{
-                        label: 'Total Barang OK / Jam',
-                        data: hourlyTotals,
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top' } }
-                }
-            });
+            const canvas2 = document.getElementById('hourlyChart');
+            if(canvas2) {
+                const ctx2 = canvas2.getContext('2d');
+                if (hourlyChart) hourlyChart.destroy();
+                hourlyChart = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: activeShifts,
+                        datasets: [{
+                            label: 'Total Barang OK / Jam',
+                            data: hourlyTotals,
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top' } }
+                    }
+                });
+            }
         }
 
         function generateShareSummaryText() {
