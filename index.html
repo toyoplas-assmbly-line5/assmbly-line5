@@ -12,62 +12,81 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- SheetJS CDN (Export Excel) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <!-- Firebase SDK -->
+    
+    <!-- Firebase SDK (Real-time Cloud Database) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandRed: '#E30613', brandBlue: '#002B66' } } } }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#E30613',
+                        brandBlue: '#002B66'
+                    }
+                }
+            }
+        }
     </script>
-    <style>.login-bg { background: linear-gradient(135deg, #002B66 0%, #00122e 100%); }</style>
+    <style>
+        .login-bg {
+            background: linear-gradient(135deg, #002B66 0%, #00122e 100%);
+        }
+    </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen transition-colors duration-200">
 
-    <!-- LOGIN SCREEN -->
+    <!-- SCREEN 1: LAYAR LOGIN -->
     <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center login-bg p-4">
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md text-center border border-gray-200 dark:border-gray-700">
             <div class="mb-6 flex justify-center">
                 <div class="p-3 bg-white rounded-xl shadow-md border border-gray-100 inline-block">
+                    <!-- LOGO RATA TENGAH -->
                     <svg class="h-16 w-auto" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <text x="160" y="65" text-anchor="middle" font-family="'Brush Script MT', cursive, sans-serif" font-weight="bold" font-style="italic" font-size="68" fill="#E30613">70Y0</text>
-                        <text x="160" y="102" text-anchor="middle" font-family="'Arial Black', sans-serif" font-weight="900" font-size="34" fill="#002B66" letter-spacing="1">TOYOPLAS</text>
+                        <text x="160" y="65" text-anchor="middle" font-family="'Brush Script MT', 'Comic Sans MS', cursive, sans-serif" font-weight="bold" font-style="italic" font-size="68" fill="#E30613">70Y0</text>
+                        <text x="160" y="102" text-anchor="middle" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="34" fill="#002B66" letter-spacing="1">TOYOPLAS</text>
                     </svg>
                 </div>
             </div>
+            
             <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-1">Assembly Line 5</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Sistem Monitoring Produksi 3 Shift</p>
+
             <div class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">PILIH HAK AKSES / PERAN</label>
-                    <select id="loginRole" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <select id="loginRole" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                         <option value="operator">Operator (Mode Input Data)</option>
                         <option value="admin_leader">Admin / Leader (Mode Edit & Akses Penuh)</option>
                     </select>
                 </div>
+
                 <div id="passwordContainer" class="hidden">
                     <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">KATA SANDI (PASSWORD)</label>
-                    <div class="relative">
-                        <input type="password" id="loginPassword" placeholder="Masukkan kata sandi..." class="w-full pl-4 pr-10 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                        <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 focus:outline-none">
-                            <i id="togglePasswordIcon" class="fas fa-eye"></i>
-                        </button>
-                    </div>
+                    <input type="password" id="loginPassword" placeholder="Masukkan kata sandi..." class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                 </div>
+
                 <div id="loginError" class="hidden text-red-500 text-xs font-semibold mt-2">
                     <i class="fas fa-exclamation-circle mr-1"></i> Kata sandi salah! Silakan coba lagi.
                 </div>
-                <button onclick="handleLogin()" type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg transition duration-200 mt-2 flex items-center justify-center gap-2 cursor-pointer">
+
+                <button id="btnLogin" onclick="handleLogin()" type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition duration-200 mt-2 flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fas fa-sign-in-alt"></i> Masuk Dashboard
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD SCREEN -->
+    <!-- SCREEN 2: MAIN DASHBOARD -->
     <div id="dashboardScreen" class="hidden min-h-screen flex flex-col">
+        <!-- HEADER NAVBAR -->
         <header class="bg-brandBlue text-white shadow-lg sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                     <div class="bg-white p-2 rounded-lg shadow-inner flex items-center justify-center">
+                        <!-- LOGO RATA TENGAH -->
                         <svg class="h-10 w-auto" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <text x="160" y="65" text-anchor="middle" font-family="'Brush Script MT', cursive, sans-serif" font-weight="bold" font-style="italic" font-size="68" fill="#E30613">70Y0</text>
                             <text x="160" y="102" text-anchor="middle" font-family="'Arial Black', sans-serif" font-weight="900" font-size="34" fill="#002B66" letter-spacing="1">TOYOPLAS</text>
@@ -76,22 +95,29 @@
                     <div>
                         <h1 class="text-lg sm:text-xl font-bold tracking-wide">PT Toyoplas Manufacturing Indonesia</h1>
                         <p class="text-xs text-blue-200 flex items-center gap-2 flex-wrap">
-                            <span>Assembly line 5</span><span>•</span>
-                            <span id="roleBadge" class="bg-blue-800 px-2 py-0.5 rounded text-[10px] font-semibold uppercase text-yellow-300"></span><span>•</span>
-                            <span id="syncStatus" class="text-emerald-300 text-[10px]"><i class="fas fa-circle-notch fa-spin"></i> Menghubungkan...</span>
+                            <span>Assembly line 5</span>
+                            <span>•</span>
+                            <span id="roleBadge" class="bg-blue-800 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider text-yellow-300"></span>
+                            <span>•</span>
+                            <span id="syncStatus" class="text-emerald-300 text-[10px]"><i class="fas fa-circle-notch fa-spin"></i> Menghubungkan Cloud...</span>
                         </p>
                     </div>
                 </div>
+
                 <div class="flex items-center gap-2 sm:gap-3">
-                    <button onclick="shareGeneral()" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow">
-                        <i class="fas fa-share-alt"></i> <span class="hidden sm:inline">Bagikan</span>
+                    <button onclick="shareGeneral()" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Bagikan Ringkasan Laporan ke WA / Lainnya">
+                        <i class="fas fa-share-alt"></i> <span class="hidden sm:inline">Bagikan Laporan</span>
                     </button>
-                    <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow">
-                        <i class="fas fa-file-excel"></i> <span class="hidden sm:inline">Excel</span>
+
+                    <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow" title="Download Spreadsheet Excel">
+                        <i class="fas fa-file-excel"></i> <span class="hidden sm:inline">Export Excel</span>
                     </button>
-                    <button onclick="toggleDarkMode()" class="bg-blue-800 hover:bg-blue-700 text-yellow-300 p-2 rounded-lg text-sm transition shadow">
-                        <i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:inline"></i>
+
+                    <button onclick="toggleDarkMode()" class="bg-blue-800 hover:bg-blue-700 text-yellow-300 p-2 rounded-lg text-sm transition shadow" title="Ganti Mode Terang/Gelap">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
                     </button>
+
                     <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow">
                         <i class="fas fa-power-off"></i> <span class="hidden sm:inline">Keluar</span>
                     </button>
@@ -99,8 +125,10 @@
             </div>
         </header>
 
+        <!-- MAIN CONTAINER -->
         <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
-            <!-- TOOLBAR -->
+            
+            <!-- TOOLBAR TANGGAL & PILIH SHIFT -->
             <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex flex-wrap items-center gap-4">
                     <div>
@@ -116,78 +144,102 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="flex items-center gap-2">
-                    <button onclick="exportBackupJSON()" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1">
-                        <i class="fas fa-download"></i> Backup
+                    <button onclick="exportBackupJSON()" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition" title="Simpan data ke file komputer">
+                        <i class="fas fa-download"></i> Backup (.json)
                     </button>
-                    <label class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer flex items-center gap-1">
-                        <i class="fas fa-upload"></i> Restore <input type="file" id="restoreFile" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+                    <label class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer flex items-center gap-1 transition" title="Buka data dari file komputer">
+                        <i class="fas fa-upload"></i> Restore
+                        <input type="file" id="restoreFile" accept=".json" onchange="importBackupJSON(event)" class="hidden">
                     </label>
                 </div>
             </div>
 
-            <!-- KPI CARDS -->
+            <!-- KPI CARDS RINGKASAN -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border-l-4 border-blue-500">
                     <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Total Target Shift</p>
                     <h3 class="text-2xl font-bold text-gray-800 dark:text-white mt-1" id="kpiTarget">0</h3>
+                    <p class="text-[10px] text-gray-400 mt-1">pcs / shift</p>
                 </div>
+
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border-l-4 border-emerald-500">
                     <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Barang OK (Finish)</p>
                     <h3 class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1" id="kpiOutput">0</h3>
+                    <p class="text-[10px] text-gray-400 mt-1">pcs bagus shift ini</p>
                 </div>
+
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border-l-4 border-red-500">
                     <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Total Barang NG</p>
                     <h3 class="text-2xl font-bold text-red-600 dark:text-red-400 mt-1" id="kpiReject">0</h3>
+                    <p class="text-[10px] text-gray-400 mt-1">pcs cacat shift ini</p>
                 </div>
+
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border-l-4 border-yellow-500">
                     <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Rata-Rata Efisiensi</p>
                     <h3 class="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1" id="kpiEfficiency">0%</h3>
+                    <p class="text-[10px] text-gray-400 mt-1">performa shift aktif</p>
                 </div>
             </div>
 
-            <!-- CHARTS -->
+            <!-- CHARTS VISUALISASI -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-4"><i class="fas fa-chart-bar text-blue-500 mr-2"></i>Target vs Actual Output</h3>
-                    <div class="h-64"><canvas id="machineChart"></canvas></div>
+                    <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-chart-bar text-blue-500"></i> Perbandingan Target vs Barang OK Per MC (Shift Aktif)
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="machineChart"></canvas>
+                    </div>
                 </div>
+
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-4"><i class="fas fa-chart-line text-emerald-500 mr-2"></i>Tren Produksi Per Jam</h3>
-                    <div class="h-64"><canvas id="hourlyChart"></canvas></div>
+                    <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-emerald-500"></i> Tren Produksi Per Jam (Shift Aktif)
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="hourlyChart"></canvas>
+                    </div>
                 </div>
             </div>
 
-            <!-- TABLE -->
+            <!-- TABEL UTAMA PRODUKSI 18 MESIN MC -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                    <h3 class="font-bold text-gray-800 dark:text-white"><i class="fas fa-list-alt text-brandBlue dark:text-blue-400 mr-2"></i>Input Data 18 Mesin (MC-01 s.d. MC-18)</h3>
+                    <h3 class="font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                        <i class="fas fa-list-alt text-brandBlue dark:text-blue-400"></i> Input Data 18 Mesin (MC-01 s.d. MC-18)
+                    </h3>
                     <span id="activeShiftLabel" class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-gray-700 px-2 py-1 rounded">Shift 1</span>
                 </div>
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-xs text-left border-collapse">
                         <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 uppercase font-semibold">
                             <tr>
-                                <th class="p-3 border-b">Machine</th>
-                                <th class="p-3 border-b min-w-[220px]">Operator & Rincian Jam Kerja (Raw / OK)</th>
-                                <th class="p-3 border-b min-w-[140px]">Current Part Name</th>
+                                <th class="p-3 border-b">Mesin</th>
+                                <th class="p-3 border-b">Operator & Rincian Jam Kerja (Raw / OK)</th>
                                 <th class="p-3 border-b text-center min-w-[90px]">Target (pcs)</th>
-                                <th class="p-3 border-b text-center min-w-[100px]">Actual Output</th>
-                                <th class="p-3 border-b text-center min-w-[90px]">Total NG</th>
-                                <th class="p-3 border-b text-center min-w-[100px]">Cycle Time (s)</th>
+                                <th class="p-3 border-b text-center min-w-[90px]">Total Raw</th>
+                                <th class="p-3 border-b text-center min-w-[90px]">Total OK</th>
+                                <th class="p-3 border-b text-center min-w-[100px]">Total NG (Manual)</th>
+                                <th class="p-3 border-b text-center min-w-[90px]">% Efisiensi</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody>
+                        <tbody id="tableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        </tbody>
                     </table>
                 </div>
             </div>
+
         </main>
+
         <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 text-center text-xs text-gray-500 dark:text-gray-400 mt-auto">
             © 2026 PT Toyoplas Manufacturing Indonesia - Assembly Line 5.
         </footer>
     </div>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- LOGIKA SKRIP APLIKASI & 3 SHIFT -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBayWf1wiJtDPfT7J3w0A3yCAJYAzLg-dA",
@@ -199,81 +251,129 @@
             appId: "1:326978986159:web:c34423b422cd211b30b45a",
             measurementId: "G-LJPLQLMW7C"
         };
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const db = firebase.database();
 
-        // Rincian Jam Kerja per Shift (Shift 3 istirahat di 04:00 - 05:00)
+        // Rincian Jam Kerja per Shift
         const SHIFTS_CONFIG = {
-            "Shift 1": ['08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00', '12:00 - 13:00 (ISTIRAHAT)', '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00'],
-            "Shift 2": ['16:00 - 17:00', '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00 (ISTIRAHAT)', '20:00 - 21:00', '21:00 - 22:00', '22:00 - 23:00'],
-            "Shift 3": ['23:00 - 00:00', '00:00 - 01:00', '01:00 - 02:00', '02:00 - 03:00', '03:00 - 04:00', '04:00 - 05:00 (ISTIRAHAT)', '05:00 - 06:00', '06:00 - 07:00']
+            "Shift 1": [
+                '08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00',
+                '12:00 - 13:00 (ISTIRAHAT)', '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00'
+            ],
+            "Shift 2": [
+                '16:00 - 17:00', '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00 (ISTIRAHAT)',
+                '20:00 - 21:00', '21:00 - 22:00', '22:00 - 23:00'
+            ],
+            "Shift 3": [
+                '23:00 - 00:00', '00:00 - 01:00', '01:00 - 02:00 (ISTIRAHAT)',
+                '02:00 - 03:00', '03:00 - 04:00', '04:00 - 05:00', '05:00 - 06:00', '06:00 - 07:00'
+            ]
         };
 
-        // Waktu shift bersih dalam detik (8 jam total - 1 jam istirahat = 7 jam kerja efektif = 25.200 detik)
-        const NET_SHIFT_SECONDS = 7 * 3600; 
-
-        let currentRole = null, machineChart = null, hourlyChart = null, globalDatabaseCache = {};
+        let currentRole = null; 
+        let machineChart = null;
+        let hourlyChart = null;
+        let globalDatabaseCache = {};
 
         window.onload = function() {
             document.getElementById('selectedDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('loginRole').addEventListener('change', e => {
-                const pc = document.getElementById('passwordContainer');
-                document.getElementById('loginError').classList.add('hidden');
-                e.target.value === 'admin_leader' ? pc.classList.remove('hidden') : pc.classList.add('hidden');
+            
+            document.getElementById('loginRole').addEventListener('change', function(e) {
+                const passContainer = document.getElementById('passwordContainer');
+                const err = document.getElementById('loginError');
+                if (err) err.classList.add('hidden');
+
+                if (e.target.value === 'admin_leader') {
+                    passContainer.classList.remove('hidden');
+                } else {
+                    passContainer.classList.add('hidden');
+                }
             });
-            if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+
             setupRealtimeSync();
         };
 
-        function togglePasswordVisibility() {
-            const pi = document.getElementById('loginPassword'), ic = document.getElementById('togglePasswordIcon');
-            if (pi.type === 'password') { pi.type = 'text'; ic.className = 'fas fa-eye-slash'; }
-            else { pi.type = 'password'; ic.className = 'fas fa-eye'; }
-        }
-
         function setupRealtimeSync() {
-            const ref = db.ref('toyoplas_production_v3');
-            ref.on('value', snap => {
-                const val = snap.val();
-                globalDatabaseCache = val ? val : createInitialDataLocal();
-                if (!val) ref.set(globalDatabaseCache);
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Terhubung';
-                if (!document.activeElement || document.activeElement.tagName !== 'INPUT') renderAll();
-                else renderKPIAndCharts();
-            }, () => {
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-300"></i> Offline';
+            const dbRef = db.ref('toyoplas_production_v3');
+            dbRef.on('value', (snapshot) => {
+                const serverData = snapshot.val();
+                if (serverData) {
+                    globalDatabaseCache = serverData;
+                } else {
+                    globalDatabaseCache = createInitialDataLocal();
+                    dbRef.set(globalDatabaseCache);
+                }
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Data Tersinkronisasi Otomatis';
+                
+                if (!document.activeElement || document.activeElement.tagName !== 'INPUT') {
+                    renderAll();
+                } else {
+                    renderKPIAndCharts();
+                }
+            }, (error) => {
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-300"></i> Mode Offline (Lokal)';
                 globalDatabaseCache = JSON.parse(localStorage.getItem('toyoplas_db_v4')) || createInitialDataLocal();
                 renderAll();
             });
         }
 
         function createInitialDataLocal() {
-            const date = new Date().toISOString().split('T')[0], data = { [date]: {} };
-            ['Shift 1', 'Shift 2', 'Shift 3'].forEach(s => {
-                data[date][s] = [];
+            const date = new Date().toISOString().split('T')[0];
+            const data = {};
+            data[date] = {};
+
+            ['Shift 1', 'Shift 2', 'Shift 3'].forEach(shiftName => {
+                data[date][shiftName] = [];
                 for (let i = 1; i <= 18; i++) {
-                    const mn = String(i).padStart(2, '0'), hourly = {};
-                    SHIFTS_CONFIG[s].forEach(sh => hourly[sh] = { raw: 0, finish: 0 });
-                    const target = 100;
-                    const cycleTime = Math.round(NET_SHIFT_SECONDS / target);
-                    data[date][s].push({ machine: `MC-${mn}`, operator: `Operator ${mn}`, partName: `Part-A${mn}`, target, totalReject: 0, cycleTime, hourly });
+                    const machineNum = String(i).padStart(2, '0');
+                    const hourly = {};
+                    SHIFTS_CONFIG[shiftName].forEach(shift => {
+                        hourly[shift] = { raw: 0, finish: 0 };
+                    });
+
+                    data[date][shiftName].push({
+                        machine: `MC-${machineNum}`,
+                        operator: `Operator ${machineNum}`,
+                        target: 100,
+                        totalReject: 0,
+                        hourly: hourly
+                    });
                 }
             });
             return data;
         }
 
         function handleLogin() {
-            const role = document.getElementById('loginRole').value, pass = document.getElementById('loginPassword').value, err = document.getElementById('loginError');
+            const role = document.getElementById('loginRole').value;
+            const pass = document.getElementById('loginPassword').value;
+            const err = document.getElementById('loginError');
+
             if (role === 'admin_leader') {
-                if (pass === 'assemblyline5') { currentRole = 'admin_leader'; err.classList.add('hidden'); showDashboard('Admin / Leader'); }
-                else err.classList.remove('hidden');
-            } else { currentRole = 'operator'; err.classList.add('hidden'); showDashboard('Operator'); }
+                if (pass === 'assemblyline5') {
+                    currentRole = 'admin_leader';
+                    if (err) err.classList.add('hidden');
+                    showDashboard('Admin / Leader');
+                } else {
+                    if (err) err.classList.remove('hidden');
+                }
+            } else {
+                currentRole = 'operator';
+                if (err) err.classList.add('hidden');
+                showDashboard('Operator');
+            }
         }
 
-        function showDashboard(rn) {
+        function showDashboard(roleName) {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('dashboardScreen').classList.remove('hidden');
-            document.getElementById('roleBadge').innerText = rn;
+            document.getElementById('roleBadge').innerText = roleName;
             renderAll();
         }
 
@@ -281,21 +381,33 @@
             document.getElementById('dashboardScreen').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
             document.getElementById('loginPassword').value = '';
-            document.getElementById('loginError').classList.add('hidden');
+            const err = document.getElementById('loginError');
+            if (err) err.classList.add('hidden');
         }
 
         function getShiftData() {
-            const date = document.getElementById('selectedDate').value || new Date().toISOString().split('T')[0];
-            const shift = document.getElementById('selectedShift').value || 'Shift 1';
-            if (!globalDatabaseCache[date]) globalDatabaseCache[date] = {};
+            const dateInput = document.getElementById('selectedDate');
+            const shiftInput = document.getElementById('selectedShift');
+            
+            const date = dateInput && dateInput.value ? dateInput.value : new Date().toISOString().split('T')[0];
+            const shift = shiftInput && shiftInput.value ? shiftInput.value : 'Shift 1';
+
+            if (!globalDatabaseCache[date]) {
+                globalDatabaseCache[date] = {};
+            }
             if (!globalDatabaseCache[date][shift]) {
                 globalDatabaseCache[date][shift] = [];
                 for (let i = 1; i <= 18; i++) {
-                    const mn = String(i).padStart(2, '0'), hourly = {};
+                    const machineNum = String(i).padStart(2, '0');
+                    const hourly = {};
                     SHIFTS_CONFIG[shift].forEach(s => hourly[s] = { raw: 0, finish: 0 });
-                    const target = 100;
-                    const cycleTime = Math.round(NET_SHIFT_SECONDS / target);
-                    globalDatabaseCache[date][shift].push({ machine: `MC-${mn}`, operator: `Operator ${mn}`, partName: `Part-A${mn}`, target, totalReject: 0, cycleTime, hourly });
+                    globalDatabaseCache[date][shift].push({
+                        machine: `MC-${machineNum}`,
+                        operator: `Operator ${machineNum}`,
+                        target: 100,
+                        totalReject: 0,
+                        hourly: hourly
+                    });
                 }
                 saveDB();
             }
@@ -308,151 +420,318 @@
         }
 
         function renderAll() {
-            document.getElementById('activeShiftLabel').innerText = document.getElementById('selectedShift').value;
-            renderTable(); renderKPIAndCharts();
+            const shiftName = document.getElementById('selectedShift').value;
+            const activeLabel = document.getElementById('activeShiftLabel');
+            if(activeLabel) activeLabel.innerText = shiftName;
+            renderTable();
+            renderKPIAndCharts();
         }
 
         function renderTable() {
-            const data = getShiftData(), shifts = SHIFTS_CONFIG[document.getElementById('selectedShift').value], tbody = document.getElementById('tableBody');
-            if (!tbody) return;
+            const data = getShiftData();
+            const shiftName = document.getElementById('selectedShift').value;
+            const activeShifts = SHIFTS_CONFIG[shiftName];
+            const tbody = document.getElementById('tableBody');
+            if(!tbody) return;
             tbody.innerHTML = '';
+
             data.forEach((item, index) => {
-                let tFinish = 0;
-                Object.keys(item.hourly || {}).forEach(s => { if (!s.includes('ISTIRAHAT')) tFinish += Number(item.hourly[s].finish || 0); });
-                const isEditable = (currentRole === 'admin_leader');
-                let hHTML = '';
-                shifts.forEach(s => {
-                    if (s.includes('ISTIRAHAT')) hHTML += `<div class="text-[10px] text-orange-500 font-semibold py-0.5">${s}</div>`;
-                    else hHTML += `<div class="flex items-center gap-2 py-0.5 border-b border-gray-100 dark:border-gray-700/50"><span class="w-24 text-[10px] text-gray-500">${s}:</span><input type="number" value="${item.hourly[s]?.raw || 0}" onchange="updateHourly(${index}, '${s}', 'raw', this.value)" class="w-16 px-1 text-center text-[10px] border rounded dark:bg-gray-700" placeholder="Raw"><input type="number" value="${item.hourly[s]?.finish || 0}" onchange="updateHourly(${index}, '${s}', 'finish', this.value)" class="w-16 px-1 text-center text-[10px] font-bold text-emerald-600 border rounded dark:bg-gray-700" placeholder="OK"></div>`;
+                let totalRaw = 0;
+                let totalFinish = 0;
+
+                Object.keys(item.hourly || {}).forEach(shift => {
+                    if (!shift.includes('ISTIRAHAT')) {
+                        totalRaw += Number(item.hourly[shift].raw || 0);
+                        totalFinish += Number(item.hourly[shift].finish || 0);
+                    }
                 });
+
+                const totalReject = Number(item.totalReject || 0);
+                const efficiency = item.target > 0 ? ((totalFinish / item.target) * 100).toFixed(1) : 0;
+
+                let effColor = 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
+                if (efficiency >= 90) effColor = 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
+                else if (efficiency >= 75) effColor = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';
+
+                const isEditable = (currentRole === 'admin_leader');
+
+                let hourlyHTML = '';
+                activeShifts.forEach(shift => {
+                    const isBreak = shift.includes('ISTIRAHAT');
+                    const rawVal = item.hourly[shift]?.raw || 0;
+                    const finishVal = item.hourly[shift]?.finish || 0;
+
+                    if (isBreak) {
+                        hourlyHTML += `<div class="text-[10px] text-orange-500 font-semibold py-0.5">${shift}</div>`;
+                    } else {
+                        hourlyHTML += `
+                            <div class="flex items-center gap-2 py-0.5 border-b border-gray-100 dark:border-gray-700/50">
+                                <span class="w-24 text-[10px] text-gray-500 dark:text-gray-400">${shift}:</span>
+                                <input type="number" value="${rawVal}" placeholder="Raw" onchange="updateHourly(${index}, '${shift}', 'raw', this.value)" class="w-16 px-1 text-center text-[10px] border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600" title="Raw Input">
+                                <input type="number" value="${finishVal}" placeholder="OK" onchange="updateHourly(${index}, '${shift}', 'finish', this.value)" class="w-16 px-1 text-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600" title="Barang OK">
+                            </div>
+                        `;
+                    }
+                });
+
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50 transition align-top';
-                tr.innerHTML = `<td class="p-3 font-bold text-gray-800 dark:text-white whitespace-nowrap">${item.machine}</td>
-                    <td class="p-3"><div class="mb-2">${isEditable ? `<input type="text" value="${item.operator || ''}" onchange="updateVal(${index}, 'operator', this.value)" class="w-full px-2 py-1 border rounded text-xs font-semibold dark:bg-gray-700">` : `<span class="font-bold text-blue-600">${item.operator || '-'}</span>`}</div><div class="bg-gray-50 dark:bg-gray-800/80 p-2 rounded-lg border border-gray-200 dark:border-gray-700">${hHTML}</div></td>
-                    <td class="p-3"><input type="text" value="${item.partName || ''}" onchange="updateVal(${index}, 'partName', this.value)" class="w-full px-2 py-1 border rounded text-xs dark:bg-gray-700"></td>
-                    <td class="p-3 text-center">${isEditable ? `<input type="number" value="${item.target || 0}" onchange="updateTarget(${index}, this.value)" class="w-16 text-center px-2 py-1 border rounded text-xs font-bold dark:bg-gray-700">` : `<span class="font-bold">${item.target || 0}</span>`}</td>
-                    <td class="p-3 text-center font-bold text-emerald-600 dark:text-emerald-400 text-sm">${tFinish}</td>
-                    <td class="p-3 text-center"><input type="number" value="${item.totalReject || 0}" onchange="updateVal(${index}, 'totalReject', this.value)" class="w-16 px-2 py-1 text-center text-xs font-bold text-red-600 border rounded dark:bg-gray-700"></td>
-                    <td class="p-3 text-center font-semibold text-blue-600 dark:text-blue-400">${item.cycleTime || 0}s</td>`;
+
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-gray-800 dark:text-white whitespace-nowrap">${item.machine}</td>
+                    <td class="p-3">
+                        <div class="mb-2">
+                            ${isEditable ? 
+                                `<input type="text" value="${item.operator}" onchange="updateOperator(${index}, this.value)" class="w-full px-2 py-1 border rounded text-xs font-semibold dark:bg-gray-700 border-gray-300 dark:border-gray-600">` : 
+                                `<span class="font-bold text-blue-600 dark:text-blue-400">${item.operator}</span>`
+                            }
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800/80 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
+                            ${hourlyHTML}
+                        </div>
+                    </td>
+                    <td class="p-3 text-center">
+                        ${isEditable ? 
+                            `<input type="number" value="${item.target}" onchange="updateTarget(${index}, this.value)" class="w-16 text-center px-2 py-1 border rounded text-xs font-bold dark:bg-gray-700 border-gray-300 dark:border-gray-600">` : 
+                            `<span class="font-bold">${item.target}</span>`
+                        }
+                    </td>
+                    <td class="p-3 text-center font-semibold text-blue-600 dark:text-blue-400">${totalRaw}</td>
+                    <td class="p-3 text-center font-bold text-emerald-600 dark:text-emerald-400">${totalFinish}</td>
+                    <td class="p-3 text-center">
+                        <input type="number" value="${totalReject}" onchange="updateTotalReject(${index}, this.value)" class="w-20 px-2 py-1 text-center text-xs font-bold text-red-600 dark:text-red-400 border rounded dark:bg-gray-700 border-gray-300 dark:border-gray-600" title="Total NG Shift Ini">
+                    </td>
+                    <td class="p-3 text-center">
+                        <span class="px-2 py-1 rounded-full text-[10px] font-bold ${effColor}">${efficiency}%</span>
+                    </td>
+                `;
                 tbody.appendChild(tr);
             });
         }
 
-        function updateVal(index, field, val) {
+        function updateOperator(index, val) {
             const data = getShiftData();
-            data[index][field] = (field === 'operator' || field === 'partName') ? val : (Number(val) || 0);
+            data[index].operator = val;
             saveDB();
-            if (field === 'totalReject') renderKPIAndCharts();
         }
 
         function updateTarget(index, val) {
             const data = getShiftData();
-            const target = Number(val) || 0;
-            data[index].target = target;
-            // Hitung otomatis Cycle Time = Waktu Shift Bersih (detik) / Target Output
-            if (target > 0) {
-                data[index].cycleTime = Math.round(NET_SHIFT_SECONDS / target);
-            } else {
-                data[index].cycleTime = 0;
-            }
+            data[index].target = Number(val) || 0;
             saveDB();
             renderAll();
+        }
+
+        function updateTotalReject(index, val) {
+            const data = getShiftData();
+            data[index].totalReject = Number(val) || 0;
+            saveDB();
+            renderKPIAndCharts();
         }
 
         function updateHourly(index, shift, field, val) {
             const data = getShiftData();
             if (!data[index].hourly[shift]) data[index].hourly[shift] = { raw: 0, finish: 0 };
             data[index].hourly[shift][field] = Number(val) || 0;
-            saveDB(); renderAll();
+            saveDB();
+            renderAll();
         }
 
         function renderKPIAndCharts() {
             const data = getShiftData();
-            let tTarget = 0, tOutput = 0, tReject = 0, labels = [], targets = [], outputs = [];
+            let totalTarget = 0;
+            let totalOutput = 0;
+            let totalReject = 0;
+
+            const labels = [];
+            const targets = [];
+            const outputs = [];
+
             data.forEach(item => {
                 let mOutput = 0;
-                Object.keys(item.hourly || {}).forEach(s => { if (!s.includes('ISTIRAHAT')) mOutput += Number(item.hourly[s].finish || 0); });
-                tTarget += Number(item.target || 0); tOutput += mOutput; tReject += Number(item.totalReject || 0);
-                labels.push(item.machine); targets.push(item.target || 0); outputs.push(mOutput);
-            });
-            const avgEff = tTarget > 0 ? ((tOutput / tTarget) * 100).toFixed(1) : 0;
-            document.getElementById('kpiTarget').innerText = tTarget.toLocaleString('id-ID');
-            document.getElementById('kpiOutput').innerText = tOutput.toLocaleString('id-ID');
-            document.getElementById('kpiReject').innerText = tReject.toLocaleString('id-ID');
-            document.getElementById('kpiEfficiency').innerText = `${avgEff}%`;
+                Object.keys(item.hourly || {}).forEach(shift => {
+                    if (!shift.includes('ISTIRAHAT')) {
+                        mOutput += Number(item.hourly[shift].finish || 0);
+                    }
+                });
 
-            const c1 = document.getElementById('machineChart');
-            if (c1) {
+                totalTarget += Number(item.target || 0);
+                totalOutput += mOutput;
+                totalReject += Number(item.totalReject || 0);
+
+                labels.push(item.machine);
+                targets.push(item.target);
+                outputs.push(mOutput);
+            });
+
+            const avgEfficiency = totalTarget > 0 ? ((totalOutput / totalTarget) * 100).toFixed(1) : 0;
+
+            const elTarget = document.getElementById('kpiTarget');
+            const elOutput = document.getElementById('kpiOutput');
+            const elReject = document.getElementById('kpiReject');
+            const elEff = document.getElementById('kpiEfficiency');
+
+            if(elTarget) elTarget.innerText = totalTarget.toLocaleString('id-ID');
+            if(elOutput) elOutput.innerText = totalOutput.toLocaleString('id-ID');
+            if(elReject) elReject.innerText = totalReject.toLocaleString('id-ID');
+            if(elEff) elEff.innerText = `${avgEfficiency}%`;
+
+            const canvas1 = document.getElementById('machineChart');
+            if(canvas1) {
+                const ctx1 = canvas1.getContext('2d');
                 if (machineChart) machineChart.destroy();
-                machineChart = new Chart(c1.getContext('2d'), {
+                machineChart = new Chart(ctx1, {
                     type: 'bar',
-                    data: { labels, datasets: [{ label: 'Target', data: targets, backgroundColor: '#3B82F6' }, { label: 'Actual Output', data: outputs, backgroundColor: '#10B981' }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } } }
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Target', data: targets, backgroundColor: '#3B82F6' },
+                            { label: 'Barang OK', data: outputs, backgroundColor: '#10B981' }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top' } }
+                    }
                 });
             }
-            const shifts = SHIFTS_CONFIG[document.getElementById('selectedShift').value].filter(s => !s.includes('ISTIRAHAT'));
-            const hourlyTotals = shifts.map(s => data.reduce((acc, curr) => acc + Number(curr.hourly[s]?.finish || 0), 0));
-            const c2 = document.getElementById('hourlyChart');
-            if (c2) {
+
+            const shiftName = document.getElementById('selectedShift').value;
+            const activeShifts = SHIFTS_CONFIG[shiftName].filter(s => !s.includes('ISTIRAHAT'));
+            const hourlyTotals = activeShifts.map(shift => {
+                return data.reduce((acc, curr) => acc + Number(curr.hourly[shift]?.finish || 0), 0);
+            });
+
+            const canvas2 = document.getElementById('hourlyChart');
+            if(canvas2) {
+                const ctx2 = canvas2.getContext('2d');
                 if (hourlyChart) hourlyChart.destroy();
-                hourlyChart = new Chart(c2.getContext('2d'), {
+                hourlyChart = new Chart(ctx2, {
                     type: 'line',
-                    data: { labels: shifts, datasets: [{ label: 'Total Actual Output / Jam', data: hourlyTotals, borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } } }
+                    data: {
+                        labels: activeShifts,
+                        datasets: [{
+                            label: 'Total Barang OK / Jam',
+                            data: hourlyTotals,
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top' } }
+                    }
                 });
             }
         }
 
         function generateShareSummaryText() {
-            return `📊 *LAPORAN PRODUKSI - TOYOPLAS*\n` +
-                   `🏭 *Line 5* (${document.getElementById('selectedShift').value})\n` +
-                   `📅 Tanggal: ${document.getElementById('selectedDate').value}\n` +
+            const date = document.getElementById('selectedDate').value;
+            const shift = document.getElementById('selectedShift').value;
+            const target = document.getElementById('kpiTarget').innerText;
+            const output = document.getElementById('kpiOutput').innerText;
+            const reject = document.getElementById('kpiReject').innerText;
+            const eff = document.getElementById('kpiEfficiency').innerText;
+
+            return `📊 *LAPORAN PRODUKSI - PT TOYOPLAS*\n` +
+                   `🏭 *Assembly Line 5* (${shift})\n` +
+                   `📅 Tanggal: ${date}\n` +
                    `----------------------------------------\n` +
-                   `🎯 Target: ${document.getElementById('kpiTarget').innerText} pcs\n` +
-                   `✅ Actual Output: ${document.getElementById('kpiOutput').innerText} pcs\n` +
-                   `❌ Total NG: ${document.getElementById('kpiReject').innerText} pcs\n` +
-                   `📈 Efisiensi: ${document.getElementById('kpiEfficiency').innerText}\n` +
-                   `----------------------------------------`;
+                   `🎯 Total Target: ${target} pcs\n` +
+                   `✅ Barang OK: ${output} pcs\n` +
+                   `❌ Total Barang NG: ${reject} pcs\n` +
+                   `📈 Rata-Rata Efisiensi: ${eff}\n` +
+                   `----------------------------------------\n` +
+                   `*Laporan dikirim otomatis dari Dashboard Line 5.*`;
         }
 
         function shareGeneral() {
             const text = generateShareSummaryText();
-            if (navigator.share) navigator.share({ title: 'Laporan Produksi', text }).catch(() => {});
-            else { navigator.clipboard.writeText(text); alert('Ringkasan disalin ke clipboard!'); }
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Laporan Produksi Toyoplas Line 5',
+                    text: text
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(text);
+                alert('Ringkasan laporan shift telah disalin ke clipboard!');
+            }
         }
 
         function exportToExcel() {
-            const data = getShiftData(), date = document.getElementById('selectedDate').value, shift = document.getElementById('selectedShift').value;
-            const rows = data.map((item, index) => {
-                let tFinish = 0; Object.keys(item.hourly || {}).forEach(s => { if (!s.includes('ISTIRAHAT')) tFinish += Number(item.hourly[s].finish || 0); });
-                return { 'No': index + 1, 'Machine': item.machine, 'Operator': item.operator || '-', 'Part Name': item.partName || '-', 'Target': item.target || 0, 'Actual Output': tFinish, 'Total NG': item.totalReject || 0, 'Cycle Time (s)': (item.cycleTime || 0) + 's' };
+            const data = getShiftData();
+            const date = document.getElementById('selectedDate').value;
+            const shift = document.getElementById('selectedShift').value;
+            
+            const rows = [];
+            data.forEach((item, index) => {
+                let tRaw = 0, tFinish = 0;
+                Object.keys(item.hourly || {}).forEach(s => {
+                    if (!s.includes('ISTIRAHAT')) {
+                        tRaw += Number(item.hourly[s].raw || 0);
+                        tFinish += Number(item.hourly[s].finish || 0);
+                    }
+                });
+                const tReject = Number(item.totalReject || 0);
+                const eff = item.target > 0 ? ((tFinish / item.target) * 100).toFixed(1) + '%' : '0%';
+
+                rows.push({
+                    'No': index + 1,
+                    'Nama Mesin': item.machine,
+                    'Nama Operator': item.operator,
+                    'Target (pcs)': item.target,
+                    'Raw Input (pcs)': tRaw,
+                    'Barang OK (pcs)': tFinish,
+                    'Barang NG (pcs)': tReject,
+                    'Efisiensi (%)': eff
+                });
             });
-            const ws = XLSX.utils.json_to_sheet(rows), wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, shift);
-            XLSX.writeFile(wb, `Laporan_Produksi_${shift}_${date}.xlsx`);
+
+            const ws = XLSX.utils.json_to_sheet(rows);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, `${shift}`);
+            XLSX.writeFile(wb, `Laporan_Produksi_Toyoplas_Line5_${shift}_${date}.xlsx`);
         }
 
         function exportBackupJSON() {
-            const blob = new Blob([JSON.stringify(globalDatabaseCache, null, 2)], { type: 'application/json' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `Backup_Data_${new Date().toISOString().split('T')[0]}.json`; a.click();
+            const jsonStr = JSON.stringify(globalDatabaseCache, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Backup_Data_3Shift_Toyoplas_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
         }
 
-        function importBackupJSON(e) {
-            const file = e.target.files[0]; if (!file) return;
+        function importBackupJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
-            reader.onload = ev => {
+            reader.onload = function(e) {
                 try {
-                    globalDatabaseCache = JSON.parse(ev.target.result);
-                    saveDB(); renderAll(); alert('Data berhasil dipulihkan!');
-                } catch (err) { alert('Format file tidak valid!'); }
+                    const imported = JSON.parse(e.target.result);
+                    if (typeof imported === 'object') {
+                        globalDatabaseCache = imported;
+                        saveDB();
+                        renderAll();
+                        alert('Data 3 Shift berhasil dipulihkan dan disinkronkan ke Cloud!');
+                    }
+                } catch (err) {
+                    alert('Format file JSON tidak valid!');
+                }
             };
             reader.readAsText(file);
         }
 
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
     </script>
 </body>
